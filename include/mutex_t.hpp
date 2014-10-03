@@ -22,6 +22,10 @@ namespace rna1 {
 
 class mutex_t {
  public:
+  mutex_t() {
+    pthread_mutex_init(&lock);
+  }
+
   mutex_t(pthread_mutex_t &lock) : m_mutex(lock) {
     // nop
   }
