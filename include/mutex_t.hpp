@@ -26,6 +26,10 @@ class mutex_t {
     pthread_mutex_init(&m_mutex, NULL);
   }
 
+  ~mutex_t() {
+    pthread_mutex_destroy(&m_mutex);
+  }
+
   void Acquire() {
     pthread_mutex_lock(&m_mutex);
   }
