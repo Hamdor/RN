@@ -23,7 +23,7 @@ namespace {
 
 const int max_size = 100;
 
-};
+} // namepsace <anonymous>
 
 namespace rna1 {
 

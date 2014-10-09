@@ -1,3 +1,18 @@
+/******************************************************************************
+ *                     ____    __  __      ______     _                       *
+ *                    /\  _`\ /\ \/\ \    /\  _  \  /' \                      *
+ *                    \ \ \L\ \ \ `\\ \   \ \ \L\ \/\_, \                     *
+ *                     \ \ ,  /\ \ , ` \   \ \  __ \/_/\ \                    *
+ *                      \ \ \\ \\ \ \`\ \   \ \ \/\ \ \ \ \                   *
+ *                       \ \_\ \_\ \_\ \_\   \ \_\ \_\ \ \_\                  *
+ *                        \/_/\/ /\/_/\/_/    \/_/\/_/  \/_/                  *
+ *                                                                            *
+ * Copyright (C) 2014                                                         *
+ * Marian Triebe  <marian.triebe  (at) haw-hamburg.de>                        *
+ * Katja Kirstein <katja.kirstein (at) haw-hamburg.de>                        *
+ *                                                                            *
+ ******************************************************************************/
+
 #ifndef RNA1_SOCKET_HPP
 #define RNA1_SOCKET_HPP
 
@@ -26,7 +41,7 @@ class socket {
 
   int bind();
 
-  int listen(size_t fifo_size);
+  int listen(size_t fifo_size=100);
   
   int close();
 

@@ -25,14 +25,17 @@ class thread_t {
   thread_t();
   virtual ~thread_t();
 
-  void start(void*);
+  void start(void* = NULL);
   void join();
 
   void set_args(void* args);
+  
+  bool is_running() const { return m_running; }
 
  protected:
   virtual void* exec(void*) = 0;
   static  void* entry_point(void*);
+  bool m_running;
 
  private:
   thread_t(const thread_t&);

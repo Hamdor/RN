@@ -1,5 +1,21 @@
-#include <iostream>
+/******************************************************************************
+ *                     ____    __  __      ______     _                       *
+ *                    /\  _`\ /\ \/\ \    /\  _  \  /' \                      *
+ *                    \ \ \L\ \ \ `\\ \   \ \ \L\ \/\_, \                     *
+ *                     \ \ ,  /\ \ , ` \   \ \  __ \/_/\ \                    *
+ *                      \ \ \\ \\ \ \`\ \   \ \ \/\ \ \ \ \                   *
+ *                       \ \_\ \_\ \_\ \_\   \ \_\ \_\ \ \_\                  *
+ *                        \/_/\/ /\/_/\/_/    \/_/\/_/  \/_/                  *
+ *                                                                            *
+ * Copyright (C) 2014                                                         *
+ * Marian Triebe  <marian.triebe  (at) haw-hamburg.de>                        *
+ * Katja Kirstein <katja.kirstein (at) haw-hamburg.de>                        *
+ *                                                                            *
+ ******************************************************************************/
+
 #include "socket.hpp"
+
+#include <iostream>
 
 using namespace rna1;
 
@@ -31,7 +47,7 @@ int socket::bind() {
   m_rc = ::bind(m_handle.m_socket,
                 reinterpret_cast<struct sockaddr*>(&m_handle.m_sockaddr),
                 sizeof(struct sockaddr_in));
-  if (m_rc != 0) {
+  if (m_rc == 0) {
     m_bound = true;
   }
   return m_rc;

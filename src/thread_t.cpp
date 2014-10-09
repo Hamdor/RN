@@ -17,7 +17,7 @@
 
 using namespace rna1;
 
-thread_t::thread_t() {
+thread_t::thread_t() : m_running(true) {
   // nop
 }
 
