@@ -17,6 +17,6 @@
 
 using namespace rna1;
 
-void* server_impl::exec() {
+void* server_impl::exec(void* args) {
   return NULL;
 }

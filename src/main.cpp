@@ -23,10 +23,10 @@ using namespace rna1;
 
 int main() {
   client_impl client;
-  client.start();
+  client.start(NULL);
 
   server_impl server;
-  server.start();
+  server.start(NULL);
 
   client.join();
   server.join();

@@ -22,7 +22,7 @@ namespace rna1 {
 
 class server_impl : public thread_t {
  protected:
-  void* exec();
+  void* exec(void*);
 };
 
 } // namespace rna1

@@ -25,16 +25,18 @@ class thread_t {
   thread_t();
   virtual ~thread_t();
 
-  void start();
+  void start(void*);
   void join();
 
+  void set_args(void* args);
+
  protected:
-  virtual void* exec() = 0;
+  virtual void* exec(void*) = 0;
   static  void* entry_point(void*);
 
  private:
   thread_t(const thread_t&);
-
+  void* m_args;
   pthread_t m_pthread;
 };
 

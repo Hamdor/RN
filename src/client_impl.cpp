@@ -35,7 +35,7 @@ const size_t unkown_value  = 27;  // what is that
 
 } // namespace <anonymous>
 
-void* client_impl::exec() {
+void* client_impl::exec(void*) {
   cvNamedWindow(window_name);
   IplImage* image = cvCreateImage(cvSize(image_height, image_width),
                                   image_depth,
