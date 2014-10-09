@@ -23,11 +23,7 @@ namespace rna1 {
 class mutex_t {
  public:
   mutex_t() {
-    pthread_mutex_init(&lock);
-  }
-
-  mutex_t(pthread_mutex_t &lock) : m_mutex(lock) {
-    // nop
+    pthread_mutex_init(&m_mutex, NULL);
   }
 
   void Acquire() {
@@ -41,7 +37,7 @@ class mutex_t {
  private:
   mutex_t(const mutex_t&);
 
-  pthread_mutex_t& m_mutex;
+  pthread_mutex_t m_mutex;
 };
 
 } // namespace rna1

@@ -13,28 +13,50 @@
  *                                                                            *
  ******************************************************************************/
 
-#ifndef RNA1_LOCK_GUARD_HPP
-#define RNA1_LOCK_GUARD_HPP
+#ifndef RNA1_RING_BUFFER_HPP
+#define RNA1_RING_BUFFER_HPP
 
 #include "mutex_t.hpp"
+#include "picture.hpp"
+
+namespace {
+
+const int max_size = 100;
+
+};
 
 namespace rna1 {
 
-class lock_guard {
+class ring_buffer {
  public:
-  lock_guard(mutex_t& mutex) : m_ref(mutex) {
-    m_ref.Acquire();
+  static ring_buffer* get_instance() {
+    if (!instance) {
+      instance = new ring_buffer();
+    }
+    return instance;
   }
+ private:
+  static ring_buffer* instance;
   
-  ~lock_guard() {
-    m_ref.Release();
+  ring_buffer() : m_current_pos(0), m_lock() {
+    // nop
   }
 
+  ring_buffer(const ring_buffer&);
+
+ public:
+  picture* get_picture(size_t pos);
+  size_t get_current_pos();
+
+  void add_new_picture(picture pic);
+
  private:
-  lock_guard(const lock_guard&);
-  mutex_t& m_ref;
+  size_t  m_current_pos;
+  mutex_t m_lock;
+  picture m_data[max_size];
 };
 
 } // namespace rna1
 
-#endif // RNA1_LOCK_GUARD_HPP
+#endif // RNA1_RING_BUFFER_HPP
+
