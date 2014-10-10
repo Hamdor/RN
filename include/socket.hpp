@@ -31,7 +31,7 @@ struct connection_handle {
 class socket {
  public:
   socket(int socket_family, int socket_type, int protocol,
-         size_t port);
+         size_t port, long addr = INADDR_ANY);
 
   ~socket();
   
@@ -46,6 +46,12 @@ class socket {
   int close();
 
   connection_handle* accept();
+
+  int connect();
+
+  int recv(void* buffer, size_t len, int flags = 0);
+
+  int send(void* data, size_t len, int flags = 0);
 
  private:
   socket(const socket&);

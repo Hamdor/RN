@@ -20,10 +20,11 @@
 using namespace rna1;
 
 socket::socket(int socket_family, int socket_type, int protocol,
-               size_t port) {
+               size_t port, long addr) {
   m_handle.m_sockaddr.sin_family      = socket_family;
   m_handle.m_sockaddr.sin_port        = ::htons(port);
-  m_handle.m_sockaddr.sin_addr.s_addr = INADDR_ANY;
+  m_handle.m_sockaddr.sin_addr.s_addr = 
+      (addr != INADDR_ANY) ? ::htonl(addr) : INADDR_ANY;
   m_handle.m_socket = ::socket(socket_family, socket_type, protocol);
   if (m_handle.m_socket == -1) {
     m_rc = -1;
@@ -96,3 +97,36 @@ connection_handle* socket::accept() {
   }
   return p_con;
 }
+
+int socket::connect() {
+  m_rc = ::connect(m_handle.m_socket,
+                   reinterpret_cast<struct sockaddr*>(&m_handle.m_sockaddr),
+                   sizeof(struct sockaddr_in));
+  if (m_rc != 0) {
+    std::cout << "ERROR in connect()! " << m_rc << std::endl;
+  }
+  return m_rc;
+}
+
+int socket::recv(void* buffer, size_t len, int flags) {
+  int rc = ::recv(m_handle.m_socket, buffer, len, flags);
+  if (rc == 0) {
+    std::cout << "ERROR in recv()! Connection was closed! "
+              << std::endl;
+    m_rc = rc;
+  } else if (rc == -1) {
+    std::cout << "ERROR in recv()! " << m_rc << std::endl;
+    m_rc = rc;
+  }
+  return rc; // amount of bytes read
+}
+
+int socket::send(void* data, size_t len, int flags) {
+  int rc = ::send(m_handle.m_socket, data, len, flags);
+  if (rc == -1) {
+    std::cout << "ERROR in send()!" << std::endl;
+    m_rc = rc;
+  }
+  return rc; // amount of bytes send
+}
+
