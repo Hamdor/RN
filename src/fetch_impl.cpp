@@ -20,20 +20,40 @@
 #include "ring_buffer.hpp"
 
 #include <iostream>
+#include <arpa/inet.h>
 
 using namespace rna1;
 
 void* fetch_impl::exec(void* args) {
-  size_t port = 5000;
-  socket sock(AF_INET,SOCK_STREAM, IPPROTO_TCP, port);
-  sock.bind();
-  sock.connect();
+  if (args == NULL) {
+    std::cerr << "ERROR in fetch_impl! args not valid" << std::endl;
+    return NULL;
+  }
+  // get args from void ptr
+  fetch_options* fopts = static_cast<fetch_options*>(args);
+  struct in_addr inp;
+  ::inet_aton(fopts->m_ip.c_str(), &inp);
+  socket sock(AF_INET,SOCK_STREAM, IPPROTO_TCP, fopts->m_port, inp.s_addr);
+  if (fopts->m_local) {
+    if (sock.bind()) {
+      std::cout << "ERROR fetch_impl: bind() failed!" << std::endl;
+      return NULL;
+    }
+  }
+  if (sock.connect()) {
+    std::cout << "ERROR fetch_impl: connect() failed!" << std::endl;
+    return NULL;
+  }
   picture pic;
   ring_buffer* instance = ring_buffer::get_instance();
   while(m_running) {
     int rc = 0;
     while (rc != sizeof(pic.m_data)) {
-      rc += sock.recv(pic.m_data + rc, sizeof(pic.m_data) - rc);
+      int err = sock.recv(pic.m_data + rc, sizeof(pic.m_data) - rc);
+      if (err == 0 || err == -1) {
+        return NULL;
+      }
+      rc += err;
     }
     instance->add_new_picture(pic);
   }

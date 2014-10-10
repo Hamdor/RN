@@ -78,8 +78,9 @@ int main(int argc, const char* argv[]) {
   //  return 1;
   //}
   
+  fetch_options fopts("192.168.178.21", 5001, false);
   fetch_impl fetch;
-  fetch.start();
+  fetch.start(&fopts);
 
   client_impl client;
   int sleep_client = 50;
