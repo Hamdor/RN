@@ -57,7 +57,7 @@ class socket {
 
   long get_addr() const;
 
-  short get_port() const;
+  uint16_t get_port() const;
 
  private:
   socket(const socket&);

@@ -146,6 +146,6 @@ long socket::get_addr() const {
   return ::ntohl(m_handle.m_sockaddr.sin_addr.s_addr);
 }
 
-short socket::get_port() const {
+uint16_t socket::get_port() const {
   return ::ntohs(m_handle.m_sockaddr.sin_port);
 }
