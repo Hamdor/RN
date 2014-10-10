@@ -42,5 +42,6 @@ void* worker_impl::exec(void* args) {
     pos = (pos + 1) % 100;
   }
   delete p_handle; // delete allocated memory...
+  delete this;
   return NULL;
 }
