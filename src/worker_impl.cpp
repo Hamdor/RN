@@ -17,6 +17,7 @@
 
 #include "socket.hpp"
 #include "ring_buffer.hpp"
+#include "picture.hpp"
 
 #include <iostream>
 
@@ -28,10 +29,17 @@ void* worker_impl::exec(void* args) {
     std::cout << "ERROR: (worker) corrupt connection_handle" << std::endl;
     return NULL;
   }
-  //ring_buffer* buffer = ring_buffer::get_instance();
+  socket sock(*p_handle);
+  ring_buffer* buffer = ring_buffer::get_instance();
+  size_t pos = buffer->get_current_pos();
+  picture pic;
   while(m_running) {
-    // TODO:
-    // Send pictures to client...:)
+    pic = buffer->get_picture(pos);
+    int rc = 0;
+    while (rc != sizeof(pic.m_data)) {
+      rc += sock.send(pic.m_data + rc, sizeof(pic.m_data) - rc);
+    }
+    pos = (pos + 1) % 100;
   }
   delete p_handle; // delete allocated memory...
   return NULL;
