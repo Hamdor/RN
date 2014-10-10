@@ -36,6 +36,7 @@ void* server_impl::exec(void* args) {
     std::cout << "ERROR ::listen() failed! Port: " << port << std::endl;
     return NULL;
   }
+  std::cout << "Server listen on port " << sock.get_port() << std::endl;
   while(m_running) {
     connection_handle* new_handle = sock.accept();
     worker_impl* new_worker = new worker_impl();

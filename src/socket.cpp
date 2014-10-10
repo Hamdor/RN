@@ -142,3 +142,10 @@ int socket::send(void* data, size_t len, int flags) {
   return rc; // amount of bytes send
 }
 
+long socket::get_addr() const {
+  return ::ntohl(m_handle.m_sockaddr.sin_addr.s_addr);
+}
+
+short socket::get_port() const {
+  return ::ntohs(m_handle.m_sockaddr.sin_port);
+}

@@ -30,6 +30,9 @@ void* worker_impl::exec(void* args) {
     return NULL;
   }
   socket sock(*p_handle);
+  std::cout << "New worker spawned (Addr: " << std::hex << sock.get_addr()
+            << ", Port: "                   << std::dec << sock.get_port()
+            << std::endl;
   ring_buffer* buffer = ring_buffer::get_instance();
   size_t pos = buffer->get_current_pos();
   picture pic;

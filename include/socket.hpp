@@ -55,6 +55,10 @@ class socket {
 
   int send(void* data, size_t len, int flags = 0);
 
+  long get_addr() const;
+
+  short get_port() const;
+
  private:
   socket(const socket&);
 
