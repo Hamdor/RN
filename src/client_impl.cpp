@@ -17,6 +17,9 @@
 
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
+#include "ring_buffer.hpp"
+
+#include <unistd.h>
 
 using namespace rna1;
 
@@ -40,11 +43,16 @@ void* client_impl::exec(void*) {
   IplImage* image = cvCreateImage(cvSize(image_height, image_width),
                                   image_depth,
                                   image_channel);
+  ring_buffer* instance = ring_buffer::get_instance();
+  size_t current_pos = 0;
   while(true) {
+    image->imageData = instance->get_picture(current_pos).m_data;
     cvShowImage(window_name, image);
     if ((cvWaitKey(delay) & unkown_and) == unkown_value) {
       break;
     }
+    current_pos = ++current_pos % 100;
+    ::usleep(1000 * 33);
   }
   cvReleaseImage(&image);
   cvDestroyAllWindows();

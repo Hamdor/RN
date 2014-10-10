@@ -16,6 +16,8 @@
 #include "worker_impl.hpp"
 
 #include "socket.hpp"
+#include "ring_buffer.hpp"
+
 #include <iostream>
 
 using namespace rna1;
@@ -26,6 +28,7 @@ void* worker_impl::exec(void* args) {
     std::cout << "ERROR: (worker) corrupt connection_handle" << std::endl;
     return NULL;
   }
+  ring_buffer* buffer = ring_buffer::get_instance();
   while(m_running) {
     // TODO:
     // Send pictures to client...:)

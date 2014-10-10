@@ -44,7 +44,7 @@ class ring_buffer {
   ring_buffer(const ring_buffer&);
 
  public:
-  picture* get_picture(size_t pos);
+  picture get_picture(size_t pos);
   size_t get_current_pos();
 
   void add_new_picture(picture pic);
