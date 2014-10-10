@@ -34,12 +34,6 @@ void* fetch_impl::exec(void* args) {
   struct in_addr inp;
   ::inet_aton(fopts->m_ip.c_str(), &inp);
   socket sock(AF_INET,SOCK_STREAM, IPPROTO_TCP, fopts->m_port, inp.s_addr);
-  if (fopts->m_local) {
-    if (sock.bind()) {
-      std::cout << "ERROR fetch_impl: bind() failed!" << std::endl;
-      return NULL;
-    }
-  }
   if (sock.connect()) {
     std::cout << "ERROR fetch_impl: connect() failed!" << std::endl;
     return NULL;

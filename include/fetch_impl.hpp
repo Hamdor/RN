@@ -22,13 +22,12 @@
 namespace rna1 {
 
 struct fetch_options {
-  fetch_options(std::string ip, size_t port, bool local)
-      : m_ip(ip), m_port(port), m_local(local) {
+  fetch_options(std::string ip, size_t port)
+      : m_ip(ip), m_port(port) {
     // nop
   }
   std::string m_ip;
   size_t      m_port;
-  bool        m_local;
 };
 
 class fetch_impl : public thread_t {
