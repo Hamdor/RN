@@ -82,7 +82,8 @@ int main(int argc, const char* argv[]) {
   fetch.start();
 
   client_impl client;
-  client.start();
+  int sleep_client = 50;
+  client.start(static_cast<void*>(&sleep_client));
 
   server_impl server;
   server.start();

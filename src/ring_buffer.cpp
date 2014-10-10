@@ -34,6 +34,6 @@ size_t ring_buffer::get_current_pos() {
 
 void ring_buffer::add_new_picture(picture pic) {
   lock_guard guard (m_lock);
-  m_current_pos = ++m_current_pos % 100;
+  m_current_pos = (m_current_pos + 1) % 100;
   m_data[m_current_pos] = pic;
 }

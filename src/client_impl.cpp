@@ -38,7 +38,8 @@ const size_t unkown_value  = 27;  // what is that
 
 } // namespace <anonymous>
 
-void* client_impl::exec(void*) {
+void* client_impl::exec(void* arg) {
+  int sleep = *static_cast<int*>(arg);
   cvNamedWindow(window_name);
   IplImage* image = cvCreateImage(cvSize(image_height, image_width),
                                   image_depth,
@@ -51,8 +52,8 @@ void* client_impl::exec(void*) {
     if ((cvWaitKey(delay) & unkown_and) == unkown_value) {
       break;
     }
-    current_pos = ++current_pos % 100;
-    ::usleep(1000 * 50);
+    current_pos = (current_pos + 1) % 100;
+    ::usleep(1000 * sleep);
   }
   cvReleaseImage(&image);
   cvDestroyAllWindows();
