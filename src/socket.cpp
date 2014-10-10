@@ -17,6 +17,9 @@
 
 #include <iostream>
 
+#include <cerrno>
+#include <cstdio>
+
 using namespace rna1;
 
 socket::socket(int socket_family, int socket_type, int protocol,
@@ -24,7 +27,7 @@ socket::socket(int socket_family, int socket_type, int protocol,
   m_handle.m_sockaddr.sin_family      = socket_family;
   m_handle.m_sockaddr.sin_port        = ::htons(port);
   m_handle.m_sockaddr.sin_addr.s_addr = 
-      (addr != INADDR_ANY) ? ::htonl(addr) : INADDR_ANY;
+      (addr != INADDR_ANY) ? addr : INADDR_ANY;
   m_handle.m_socket = ::socket(socket_family, socket_type, protocol);
   if (m_handle.m_socket == -1) {
     m_rc = -1;
@@ -33,8 +36,7 @@ socket::socket(int socket_family, int socket_type, int protocol,
   m_rc = ::setsockopt(m_handle.m_socket, SOL_SOCKET,
                       SO_REUSEADDR, &option, sizeof(option));
   if (m_rc != 0) {
-    std::cout << "ERROR: setsockopt failed with "
-              << m_rc << std::endl;
+    ::perror("ERROR: setsockopt failed!");
   }
 }
 
@@ -47,7 +49,10 @@ socket::socket(const connection_handle& handle)
 
 socket::~socket() {
   if (m_handle.m_socket != 0) {
-    ::close(m_handle.m_socket);
+    m_rc = ::close(m_handle.m_socket);
+  }
+  if (m_rc != 0) {
+    ::perror("ERROR: ~socket() error");
   }
 }
 
@@ -56,7 +61,7 @@ int socket::bind() {
     return m_rc;
   }
   if (m_bound) {
-    std::cout << "ERROR: Socket already bound!" << std::endl;
+    std::cerr << "ERROR: Socket already bound!" << std::endl;
     return -1;
   }
   m_rc = ::bind(m_handle.m_socket,
@@ -64,6 +69,8 @@ int socket::bind() {
                 sizeof(struct sockaddr_in));
   if (m_rc == 0) {
     m_bound = true;
+  } else {
+    ::perror("ERROR: Socket bind() failed!");
   }
   return m_rc;
 }
@@ -73,11 +80,11 @@ int socket::listen(size_t fifo_size) {
     return m_rc;
   }
   if (m_listen) {
-    std::cout << "ERROR: Socket already listen!" << std::endl;
+    std::cerr << "ERROR: Socket already listen!" << std::endl;
     return -1;
   }
   if (!m_bound) {
-    std::cout << "ERROR: Socket is not bound!" << std::endl;
+    std::cerr << "ERROR: Socket is not bound!" << std::endl;
     return -2;
   }
   m_rc = ::listen(m_handle.m_socket, fifo_size);
@@ -97,8 +104,7 @@ connection_handle* socket::accept() {
                              reinterpret_cast<socklen_t*>(&n));
   if (p_con->m_socket == -1) {
     // error free memory...
-    std::cout << "ERROR in accept()! p_con->m_socket = "
-              << p_con->m_socket << std::endl;
+    ::perror("ERROR in accpet()!");
     delete p_con;
     return NULL;
   }
@@ -110,7 +116,7 @@ int socket::connect() {
                    reinterpret_cast<struct sockaddr*>(&m_handle.m_sockaddr),
                    sizeof(struct sockaddr_in));
   if (m_rc != 0) {
-    std::cout << "ERROR in connect()! " << m_rc << std::endl;
+    ::perror("ERROR in connect()!");
   }
   return m_rc;
 }
@@ -118,11 +124,10 @@ int socket::connect() {
 int socket::recv(void* buffer, size_t len, int flags) {
   int rc = ::recv(m_handle.m_socket, buffer, len, flags);
   if (rc == 0) {
-    std::cout << "ERROR in recv()! Connection was closed! "
-              << std::endl;
+    ::perror("ERROR in recv()! Connection was closed!");
     m_rc = rc;
   } else if (rc == -1) {
-    std::cout << "ERROR in recv()! " << m_rc << std::endl;
+    ::perror("ERROR in recv()! ");
     m_rc = rc;
   }
   return rc; // amount of bytes read
@@ -131,7 +136,7 @@ int socket::recv(void* buffer, size_t len, int flags) {
 int socket::send(void* data, size_t len, int flags) {
   int rc = ::send(m_handle.m_socket, data, len, flags);
   if (rc == -1) {
-    std::cout << "ERROR in send()!" << std::endl;
+    ::perror("ERROR in send()!");
     m_rc = rc;
   }
   return rc; // amount of bytes send
