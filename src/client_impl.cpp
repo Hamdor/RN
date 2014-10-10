@@ -52,7 +52,7 @@ void* client_impl::exec(void*) {
       break;
     }
     current_pos = ++current_pos % 100;
-    ::usleep(1000 * 33);
+    ::usleep(1000 * 50);
   }
   cvReleaseImage(&image);
   cvDestroyAllWindows();

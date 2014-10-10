@@ -4,7 +4,7 @@
 #include "socket.hpp"
 #include "ring_buffer.hpp"
 
-#include <unistd.h>
+#include <iostream>
 
 using namespace rna1;
 
@@ -16,9 +16,11 @@ void* fetch_impl::exec(void* args) {
   picture pic;
   ring_buffer* instance = ring_buffer::get_instance();
   while(m_running) {
-    sock.recv(&pic.m_data, sizeof(pic.m_data));
+    int rc = 0;
+    while (rc != sizeof(pic.m_data)) {
+      rc += sock.recv(pic.m_data + rc, sizeof(pic.m_data) - rc);
+    }
     instance->add_new_picture(pic);
-    ::usleep(1000 * 33);
   }
   return NULL;
 }
