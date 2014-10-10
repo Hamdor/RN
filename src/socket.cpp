@@ -27,7 +27,14 @@ socket::socket(int socket_family, int socket_type, int protocol,
   m_handle.m_socket = ::socket(socket_family, socket_type, protocol);
   if (m_handle.m_socket == -1) {
     m_rc = -1;
-  } 
+  }
+  int option = 1;
+  m_rc = ::setsockopt(m_handle.m_socket, SOL_SOCKET,
+                      SO_REUSEADDR, &option, sizeof(option));
+  if (m_rc != 0) {
+    std::cout << "ERROR: setsockopt failed with "
+              << m_rc << std::endl;
+  }
 }
 
 socket::~socket() {
