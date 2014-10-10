@@ -40,7 +40,7 @@ void* worker_impl::exec(void* args) {
     pic = buffer->get_picture(pos);
     int rc = 0;
     while (rc != sizeof(pic.m_data)) {
-      rc += sock.send(pic.m_data + rc, sizeof(pic.m_data) - rc);
+      rc += sock.send(pic.m_data + rc, sizeof(pic.m_data) - rc, MSG_NOSIGNAL);
     }
     pos = (pos + 1) % 100;
   }
