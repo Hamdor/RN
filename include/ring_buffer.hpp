@@ -37,7 +37,6 @@ class ring_buffer {
   }
  private:
   static ring_buffer* instance;
-  
   ring_buffer() : m_current_pos(0), m_lock() {
     // nop
   }

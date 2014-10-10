@@ -19,6 +19,8 @@
 using namespace std;
 using namespace rna1;
 
+ring_buffer* ring_buffer::instance = NULL;
+
 picture* ring_buffer::get_picture(size_t pos) {
   lock_guard guard (m_lock);
   return pos < sizeof(m_data) ? &m_data[pos] : NULL;
