@@ -33,6 +33,8 @@ class socket {
   socket(int socket_family, int socket_type, int protocol,
          size_t port, long addr = INADDR_ANY);
 
+  socket(const connection_handle& handle);
+
   ~socket();
   
   bool is_bound() const { return m_bound; }

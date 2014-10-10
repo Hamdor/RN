@@ -38,6 +38,13 @@ socket::socket(int socket_family, int socket_type, int protocol,
   }
 }
 
+socket::socket(const connection_handle& handle)
+    : m_handle(handle),
+      m_rc(0),
+      m_bound(true),
+      m_listen(false) {
+}
+
 socket::~socket() {
   if (m_handle.m_socket != 0) {
     ::close(m_handle.m_socket);
