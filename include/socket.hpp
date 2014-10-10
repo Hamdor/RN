@@ -59,6 +59,8 @@ class socket {
 
   uint16_t get_port() const;
 
+  int setsockopt(int optname, int* val);
+
  private:
   socket(const socket&);
 

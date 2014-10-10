@@ -149,3 +149,8 @@ long socket::get_addr() const {
 uint16_t socket::get_port() const {
   return ::ntohs(m_handle.m_sockaddr.sin_port);
 }
+
+int socket::setsockopt(int optname, int* val) {
+  return ::setsockopt(m_handle.m_socket, SOL_SOCKET, optname,
+                      static_cast<void*>(val), sizeof(int));
+}
