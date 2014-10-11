@@ -31,6 +31,7 @@ class condvar_t {
 
  private:
   condvar_t();
+  condvar_t(const condvar_t&);
 
   mutex_t&       m_lock;
   pthread_cond_t m_cond;
