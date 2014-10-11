@@ -41,7 +41,7 @@ namespace {
     { "no-client",   no_argument,       0, static_cast<char>(noclient)   },
     { "server-port", required_argument, 0, static_cast<char>(serverport) },
     { "cam-server",  required_argument, 0, static_cast<char>(camserver)  },
-    { "cam-port=",   required_argument, 0, static_cast<char>(camport)    },
+    { "cam-port",   required_argument, 0, static_cast<char>(camport)    },
     { "help",        no_argument,       0, static_cast<char>(help)       }
   };
 
@@ -128,6 +128,7 @@ int main(int argc, char* argv[]) {
   if (!args.m_no_server) {
     server.start();
   }
+  // join threads
   fetch.join();
   if (!args.m_no_client) {
     client.join();
