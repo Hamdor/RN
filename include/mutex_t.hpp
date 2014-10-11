@@ -21,6 +21,7 @@
 namespace rna1 {
 
 class mutex_t {
+ friend class condvar_t;
  public:
   mutex_t() {
     pthread_mutex_init(&m_mutex, NULL);
