@@ -58,6 +58,7 @@ void* worker_impl::exec(void* args) {
     pos = (pos + 1) % 100;
   }
   // cleanup
+  this->detach();
   delete p_args->m_handle;
   delete p_args;
   delete this;

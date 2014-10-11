@@ -41,7 +41,6 @@ void* server_impl::exec(void* args) {
   while(m_running) {
     worker_options* opts = new worker_options(sock.accept(), fps);
     worker_impl* new_worker = new worker_impl();
-    new_worker->detach();
     new_worker->start(static_cast<void*>(opts));
   }
   return NULL;
