@@ -78,13 +78,12 @@ int main(int argc, const char* argv[]) {
   //  return 1;
   //}
   
-  fetch_options fopts("192.168.178.21", 5001);
+  fetch_options fopts("127.0.0.1", 5000);
   fetch_impl fetch;
   fetch.start(&fopts);
 
   client_impl client;
-  int sleep_client = 50;
-  client.start(static_cast<void*>(&sleep_client));
+  client.start();
 
   server_impl server;
   server.start();

@@ -17,6 +17,7 @@
 #define RNA1_RING_BUFFER_HPP
 
 #include "mutex_t.hpp"
+#include "condvar_t.hpp"
 #include "picture.hpp"
 
 namespace {
@@ -37,7 +38,7 @@ class ring_buffer {
   }
  private:
   static ring_buffer* instance;
-  ring_buffer() : m_current_pos(0), m_lock() {
+  ring_buffer() : m_current_pos(0), m_lock(), m_cond(m_lock) {
     // nop
   }
 
@@ -48,11 +49,14 @@ class ring_buffer {
   size_t get_current_pos();
 
   void add_new_picture(picture pic);
+  
+  void wait_on_picture(size_t num);
 
  private:
-  size_t  m_current_pos;
-  mutex_t m_lock;
-  picture m_data[max_size];
+  size_t    m_current_pos;
+  mutex_t   m_lock;
+  condvar_t m_cond;
+  picture   m_data[max_size];
 };
 
 } // namespace rna1

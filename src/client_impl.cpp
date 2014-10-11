@@ -17,9 +17,8 @@
 
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
-#include "ring_buffer.hpp"
 
-#include <unistd.h>
+#include "ring_buffer.hpp"
 
 using namespace rna1;
 
@@ -39,21 +38,20 @@ const size_t unkown_value  = 27;  // what is that
 } // namespace <anonymous>
 
 void* client_impl::exec(void* arg) {
-  int sleep = *static_cast<int*>(arg);
   cvNamedWindow(window_name);
   IplImage* image = cvCreateImage(cvSize(image_height, image_width),
                                   image_depth,
                                   image_channel);
   ring_buffer* instance = ring_buffer::get_instance();
-  size_t current_pos = 0;
+  size_t current_pos = instance->get_current_pos();
   while(true) {
     image->imageData = instance->get_picture(current_pos).m_data;
     cvShowImage(window_name, image);
     if ((cvWaitKey(delay) & unkown_and) == unkown_value) {
       break;
     }
+    instance->wait_on_picture(current_pos);
     current_pos = (current_pos + 1) % 100;
-    ::usleep(1000 * sleep);
   }
   cvReleaseImage(&image);
   cvDestroyAllWindows();
