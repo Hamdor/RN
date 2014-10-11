@@ -3,7 +3,7 @@
 # marian.triebe  (at) haw-hamburg.de
 # katja.kirstein (at) haw-hamburg.de
 LDFLAGS=-lpthread -lopencv_highgui -lopencv_core -lopencv_imgproc
-CFLAGS=-Wall -g
+CFLAGS=-Wall -g -O3
 INCLUDE_PATH=include
 OUTPUTNAME=rna1
 SRC_FILES=src/*

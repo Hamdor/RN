@@ -25,7 +25,7 @@ using namespace rna1;
 socket::socket(int socket_family, int socket_type, int protocol,
                size_t port, long addr) {
   m_handle.m_sockaddr.sin_family      = socket_family;
-  m_handle.m_sockaddr.sin_port        = ::htons(port);
+  m_handle.m_sockaddr.sin_port        = htons(port);
   m_handle.m_sockaddr.sin_addr.s_addr = 
       (addr != INADDR_ANY) ? addr : INADDR_ANY;
   m_handle.m_socket = ::socket(socket_family, socket_type, protocol);
@@ -143,11 +143,11 @@ int socket::send(void* data, size_t len, int flags) {
 }
 
 long socket::get_addr() const {
-  return ::ntohl(m_handle.m_sockaddr.sin_addr.s_addr);
+  return ntohl(m_handle.m_sockaddr.sin_addr.s_addr);
 }
 
 uint16_t socket::get_port() const {
-  return ::ntohs(m_handle.m_sockaddr.sin_port);
+  return ntohs(m_handle.m_sockaddr.sin_port);
 }
 
 int socket::setsockopt(int optname, int* val) {
