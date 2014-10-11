@@ -45,6 +45,7 @@ void* fetch_impl::exec(void* args) {
     while (rc != sizeof(pic.m_data)) {
       int err = sock.recv(pic.m_data + rc, sizeof(pic.m_data) - rc);
       if (err == 0 || err == -1) {
+        std::cerr << "ERROR fetch_impl: connection was closed!" << std::endl;
         return NULL;
       }
       rc += err;
