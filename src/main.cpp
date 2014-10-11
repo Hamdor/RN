@@ -33,6 +33,7 @@ namespace {
     serverport,
     camserver,
     camport,
+    fps,
     help
   };
 
@@ -41,18 +42,20 @@ namespace {
     { "no-client",   no_argument,       0, static_cast<char>(noclient)   },
     { "server-port", required_argument, 0, static_cast<char>(serverport) },
     { "cam-server",  required_argument, 0, static_cast<char>(camserver)  },
-    { "cam-port",   required_argument, 0, static_cast<char>(camport)    },
+    { "cam-port",    required_argument, 0, static_cast<char>(camport)    },
+    { "fps",         required_argument, 0, static_cast<char>(fps)        },
     { "help",        no_argument,       0, static_cast<char>(help)       }
   };
 
   struct arguments {
     arguments(uint16_t server_port, std::string cam_server,
-              uint16_t cam_port, bool no_client, bool no_server)
+              uint16_t cam_port, bool no_client, bool no_server, uint8_t fps)
         : m_server_port(server_port),
           m_cam_server(cam_server),
           m_cam_port(cam_port),
           m_no_client(no_client),
-          m_no_server(no_server) {
+          m_no_server(no_server),
+          m_fps(fps) {
       // nop
     }
 
@@ -61,6 +64,7 @@ namespace {
     uint16_t    m_cam_port;
     bool        m_no_client;
     bool        m_no_server;
+    uint8_t     m_fps;
    private:
     arguments();
   };
@@ -74,11 +78,12 @@ void print_help() {
             << "  --server-port=<arg>  Port to listen on"       << std::endl
             << "  --cam-server=<arg>   IP of camera server"     << std::endl
             << "  --cam-port=<arg>     Port of camera server"   << std::endl
+            << "  --fps=<arg>          fps of server"           << std::endl
             << "  --help               Print this help message" << std::endl;
 }
 
 arguments parse_args(int argc, char* argv[]) {
-  arguments args(5001, "127.0.0.1", 5000, false, false);
+  arguments args(5001, "127.0.0.1", 5000, false, false, 20);
   int opt = 0;
   int idx = 0;
   while ((opt = getopt_long_only(argc, argv, "", options,
@@ -99,6 +104,9 @@ arguments parse_args(int argc, char* argv[]) {
       case camport: {
         args.m_cam_port = ::atoi(optarg);
       } break;
+      case fps: {
+        args.m_fps = ::atoi(optarg);
+      } break;
       case help: {
         print_help();
         exit(0);
@@ -117,16 +125,20 @@ arguments parse_args(int argc, char* argv[]) {
 int main(int argc, char* argv[]) {
   // parse arguments
   arguments args = parse_args(argc, argv);
+  // prepare fetcher
   fetch_options fopts(args.m_cam_server, args.m_cam_port);
   fetch_impl fetch;
   fetch.start(&fopts);
+  // prepare client
   client_impl client;
   if (!args.m_no_client) {
     client.start();
   }
+  // prepare server
+  server_options sopts(args.m_server_port, args.m_fps);
   server_impl server;
   if (!args.m_no_server) {
-    server.start();
+    server.start(&sopts);
   }
   // join threads
   fetch.join();

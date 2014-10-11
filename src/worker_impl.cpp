@@ -53,7 +53,7 @@ void* worker_impl::exec(void* args) {
         break;
       }
       rc += err;
-      ::usleep(50 * 1000);
+      ::usleep((1/p_args->m_fps) * 1000);
     }
     pos = (pos + 1) % 100;
   }
