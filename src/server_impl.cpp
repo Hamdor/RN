@@ -42,7 +42,12 @@ void* server_impl::exec(void* args) {
   }
   std::cout << "Server listen on port " << sock.get_port() << std::endl;
   while(m_running) {
-    worker_options* wopts = new worker_options(sock.accept(), opts.m_fps);
+    connection_handle* handle = sock.accept();
+    if (handle == NULL) {
+      // accept failed. We got already a error message
+      continue;
+    }
+    worker_options* wopts = new worker_options(handle, opts.m_fps);
     worker_impl* new_worker = new worker_impl();
     new_worker->start(static_cast<void*>(wopts));
   }
