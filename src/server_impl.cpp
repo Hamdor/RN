@@ -40,6 +40,7 @@ void* server_impl::exec(void* args) {
   while(m_running) {
     connection_handle* new_handle = sock.accept();
     worker_impl* new_worker = new worker_impl();
+    new_worker->detach();
     new_worker->start(static_cast<void*>(new_handle));
   }
   return NULL;

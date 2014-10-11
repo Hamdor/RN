@@ -43,3 +43,6 @@ void* thread_t::entry_point(void* pthis) {
   return p->exec(p->m_args);
 }
 
+int thread_t::detach() {
+  return pthread_detach(m_pthread);
+}

@@ -32,6 +32,8 @@ class thread_t {
   
   bool is_running() const { return m_running; }
 
+  int detach();
+
  protected:
   virtual void* exec(void*) = 0;
   static  void* entry_point(void*);
