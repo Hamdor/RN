@@ -15,21 +15,27 @@
 
 #include "worker_impl.hpp"
 
-#include "socket.hpp"
 #include "ring_buffer.hpp"
 #include "picture.hpp"
 
 #include <iostream>
 
+#include <unistd.h>
+
 using namespace rna1;
 
 void* worker_impl::exec(void* args) {
-  connection_handle* p_handle = static_cast<connection_handle*>(args);
-  if (p_handle == NULL) {
-    std::cout << "ERROR: (worker) corrupt connection_handle" << std::endl;
+  worker_options* p_args = static_cast<worker_options*>(args);
+  if (p_args == NULL) {
+    std::cout << "ERROR: (worker) corrupt worker_options" << std::endl;
     return NULL;
   }
-  socket sock(*p_handle);
+  if (p_args->m_handle == NULL) {
+    std::cout << "ERROR: (worker) corrupt connection_handle" << std::endl;
+    delete p_args;
+    return NULL;
+  }
+  socket sock(*p_args->m_handle);
   std::cout << "New worker spawned (Addr: " << std::hex << sock.get_addr()
             << ", Port: "                   << std::dec << sock.get_port()
             << ")" << std::endl;
@@ -47,10 +53,13 @@ void* worker_impl::exec(void* args) {
         break;
       }
       rc += err;
+      ::usleep(50 * 1000);
     }
     pos = (pos + 1) % 100;
   }
-  delete p_handle; // delete allocated memory...
+  // cleanup
+  delete p_args->m_handle;
+  delete p_args;
   delete this;
   return NULL;
 }

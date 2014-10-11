@@ -23,6 +23,7 @@ using namespace rna1;
 
 void* server_impl::exec(void* args) {
   size_t port = 5001;
+  size_t fps  = 20;
   socket sock(AF_INET,SOCK_STREAM, IPPROTO_TCP, port);
   if (sock.has_error()) {
     std::cout << "ERROR ::socket() failed! Port: " << port << std::endl;
@@ -38,10 +39,10 @@ void* server_impl::exec(void* args) {
   }
   std::cout << "Server listen on port " << sock.get_port() << std::endl;
   while(m_running) {
-    connection_handle* new_handle = sock.accept();
+    worker_options* opts = new worker_options(sock.accept(), fps);
     worker_impl* new_worker = new worker_impl();
     new_worker->detach();
-    new_worker->start(static_cast<void*>(new_handle));
+    new_worker->start(static_cast<void*>(opts));
   }
   return NULL;
 }
