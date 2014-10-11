@@ -40,7 +40,13 @@ void* worker_impl::exec(void* args) {
     pic = buffer->get_picture(pos);
     int rc = 0;
     while (rc != sizeof(pic.m_data)) {
-      rc += sock.send(pic.m_data + rc, sizeof(pic.m_data) - rc, MSG_NOSIGNAL);
+      int err = sock.send(pic.m_data + rc, sizeof(pic.m_data) - rc, MSG_NOSIGNAL);
+      if (err == 0 || err == -1) {
+        std::cerr << "Connection was closed!" << std::endl;
+        m_running = false;
+        break;
+      }
+      rc += err;
     }
     pos = (pos + 1) % 100;
   }
