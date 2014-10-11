@@ -39,7 +39,7 @@ void* worker_impl::exec(void* args) {
   int sleep = ((double) 1 / (double) p_args->m_fps) * 1000 * 1000;
   std::cout << "New worker spawned (Addr: " << std::hex << sock.get_addr()
             << ", Port: "                   << std::dec << sock.get_port()
-            << ", fps: "                    << std::dec << sleep
+            << ", fps: "                    << std::dec << p_args->m_fps
             << ")" << std::endl;
   ring_buffer* buffer = ring_buffer::get_instance();
   size_t pos = buffer->get_current_pos();
