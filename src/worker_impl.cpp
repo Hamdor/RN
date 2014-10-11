@@ -57,7 +57,7 @@ void* worker_impl::exec(void* args) {
       rc += err;
       ::usleep(sleep);
     }
-    pos = (pos + 1) % 100;
+    pos = (pos + 1) % buffer->size;
   }
   // cleanup
   this->detach();

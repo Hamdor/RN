@@ -42,16 +42,16 @@ void* client_impl::exec(void* arg) {
   IplImage* image = cvCreateImage(cvSize(image_height, image_width),
                                   image_depth,
                                   image_channel);
-  ring_buffer* instance = ring_buffer::get_instance();
-  size_t current_pos = instance->get_current_pos();
+  ring_buffer* buffer = ring_buffer::get_instance();
+  size_t current_pos  = buffer->get_current_pos();
   while(true) {
-    image->imageData = instance->get_picture(current_pos).m_data;
+    image->imageData = buffer->get_picture(current_pos).m_data;
     cvShowImage(window_name, image);
     if ((cvWaitKey(delay) & unkown_and) == unkown_value) {
       break;
     }
-    instance->wait_on_picture(current_pos);
-    current_pos = (current_pos + 1) % 100;
+    buffer->wait_on_picture(current_pos);
+    current_pos = (current_pos + 1) % buffer->size;
   }
   cvReleaseImage(&image);
   cvDestroyAllWindows();
