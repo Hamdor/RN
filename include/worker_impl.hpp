@@ -27,7 +27,7 @@ struct worker_options {
     // nop
   }
   connection_handle* m_handle;
-  size_t            m_fps;
+  size_t             m_fps;
 };
 
 class worker_impl : public thread_t {

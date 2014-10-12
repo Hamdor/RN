@@ -63,4 +63,3 @@ class ring_buffer {
 } // namespace rna1
 
 #endif // RNA1_RING_BUFFER_HPP
-

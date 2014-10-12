@@ -23,26 +23,25 @@ using namespace rna1;
 ring_buffer* ring_buffer::instance = NULL;
 
 picture ring_buffer::get_picture(size_t pos) {
-  lock_guard guard (m_lock);
+  lock_guard guard(m_lock);
   return m_data[pos];
-  //return pos < sizeof(m_data) ? *m_data[pos] : NULL;
 }
 
 size_t ring_buffer::get_current_pos() {
-  lock_guard guard (m_lock);
+  lock_guard guard(m_lock);
   return m_current_pos;
 }
 
 void ring_buffer::add_new_picture(picture pic) {
-  lock_guard guard (m_lock);
+  lock_guard guard(m_lock);
   m_current_pos = (m_current_pos + 1) % 100;
   m_data[m_current_pos] = pic;
   m_cond.broadcast();
 }
 
 void ring_buffer::wait_on_picture(size_t num) {
-  lock_guard guard (m_lock);
-  while(m_current_pos == num) {
+  lock_guard guard(m_lock);
+  while (m_current_pos == num) {
     // no newer picture
     m_cond.wait();
   }

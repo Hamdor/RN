@@ -23,6 +23,12 @@
 
 namespace rna1 {
 
+namespace {
+
+  const int socket_fifo_size = 100;
+
+} // namespace <anonymous>
+
 struct connection_handle {
   int                m_socket;
   struct sockaddr_in m_sockaddr;
@@ -43,7 +49,7 @@ class socket {
 
   int bind();
 
-  int listen(size_t fifo_size=100);
+  int listen(size_t fifo_size = socket_fifo_size);
   
   int close();
 

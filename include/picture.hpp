@@ -34,12 +34,11 @@ struct picture {
   picture(const picture& other) {
     std::memcpy(m_data, other.m_data, sizeof(m_data));
   }
-  picture() { }
+  picture() {
+    // nop
+  }
 };
 
 } // namespace rna1
 
 #endif // RNA1_PICTURE HPP
-
-
-
