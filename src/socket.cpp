@@ -47,9 +47,6 @@ socket::socket(const connection_handle& handle)
 
 socket::~socket() {
   close();
-  if (m_rc != 0) {
-    perror("ERROR: ~socket() error");
-  }
 }
 
 int socket::bind() {

@@ -35,7 +35,6 @@ void* fetch_impl::exec(void* args) {
   ::inet_aton(fopts->m_ip.c_str(), &inp);
   socket sock(AF_INET,SOCK_STREAM, IPPROTO_TCP, fopts->m_port, inp.s_addr);
   if (sock.connect()) {
-    std::cout << "ERROR fetch_impl: connect() failed!" << std::endl;
     return NULL;
   }
   picture pic;
@@ -45,7 +44,6 @@ void* fetch_impl::exec(void* args) {
     while (rc != sizeof(pic.m_data) && !sock.has_error() && m_running) {
       int err = sock.recv(pic.m_data + rc, sizeof(pic.m_data) - rc);
       if (err == 0 || err == -1) {
-        std::cerr << "ERROR fetch_impl: connection was closed!" << std::endl;
         m_running = false;
         return NULL;
       }
