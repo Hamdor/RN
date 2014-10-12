@@ -28,11 +28,15 @@ void* worker_impl::exec(void* args) {
   worker_options* p_args = static_cast<worker_options*>(args);
   if (p_args == NULL) {
     std::cout << "ERROR: (worker) corrupt worker_options" << std::endl;
+    this->detach();
+    delete this;
     return NULL;
   }
   if (p_args->m_handle == NULL) {
     std::cout << "ERROR: (worker) corrupt connection_handle" << std::endl;
+    this->detach();
     delete p_args;
+    delete this;
     return NULL;
   }
   socket sock(*p_args->m_handle);
@@ -44,13 +48,12 @@ void* worker_impl::exec(void* args) {
   ring_buffer* buffer = ring_buffer::get_instance();
   size_t pos = buffer->get_current_pos();
   picture pic;
-  while(m_running) {
+  while (m_running && !sock.has_error()) {
     pic = buffer->get_picture(pos);
     int rc = 0;
-    while (rc != sizeof(pic.m_data)) {
+    while (rc != sizeof(pic.m_data) && !sock.has_error() && m_running) {
       int err = sock.send(pic.m_data + rc, sizeof(pic.m_data) - rc, MSG_NOSIGNAL);
       if (err == 0 || err == -1) {
-        std::cerr << "Connection was closed!" << std::endl;
         m_running = false;
         break;
       }

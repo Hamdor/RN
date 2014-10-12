@@ -41,7 +41,7 @@ void* server_impl::exec(void* args) {
     return NULL;
   }
   std::cout << "Server listen on port " << sock.get_port() << std::endl;
-  while(m_running) {
+  while (m_running) {
     connection_handle* handle = sock.accept();
     if (handle == NULL) {
       // accept failed. We got already a error message

@@ -40,12 +40,13 @@ void* fetch_impl::exec(void* args) {
   }
   picture pic;
   ring_buffer* instance = ring_buffer::get_instance();
-  while(m_running) {
+  while(m_running && !sock.has_error()) {
     int rc = 0;
-    while (rc != sizeof(pic.m_data)) {
+    while (rc != sizeof(pic.m_data) && !sock.has_error() && m_running) {
       int err = sock.recv(pic.m_data + rc, sizeof(pic.m_data) - rc);
       if (err == 0 || err == -1) {
         std::cerr << "ERROR fetch_impl: connection was closed!" << std::endl;
+        m_running = false;
         return NULL;
       }
       rc += err;
