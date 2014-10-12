@@ -29,15 +29,11 @@ socket::socket(int socket_family, int socket_type, int protocol,
   m_handle.m_sockaddr.sin_addr.s_addr = 
       (addr != INADDR_ANY) ? addr : INADDR_ANY;
   m_handle.m_socket = ::socket(socket_family, socket_type, protocol);
-  if (m_handle.m_socket == -1) {
+  if (m_handle.m_socket < 0) {
     m_rc = -1;
   }
-  int option = 1;
-  m_rc = ::setsockopt(m_handle.m_socket, SOL_SOCKET,
-                      SO_REUSEADDR, &option, sizeof(option));
-  if (m_rc != 0) {
-    ::perror("ERROR: setsockopt failed!");
-  }
+  int opt = 1;
+  setsockopt(SO_REUSEADDR, &opt, sizeof(int));
 }
 
 socket::socket(const connection_handle& handle)
@@ -45,14 +41,14 @@ socket::socket(const connection_handle& handle)
       m_rc(0),
       m_bound(true),
       m_listen(false) {
+  int opt = 1;
+  setsockopt(SO_REUSEADDR, &opt, sizeof(int));
 }
 
 socket::~socket() {
-  if (m_handle.m_socket != 0) {
-    m_rc = ::close(m_handle.m_socket);
-  }
+  close();
   if (m_rc != 0) {
-    ::perror("ERROR: ~socket() error");
+    perror("ERROR: ~socket() error");
   }
 }
 
@@ -70,7 +66,7 @@ int socket::bind() {
   if (m_rc == 0) {
     m_bound = true;
   } else {
-    ::perror("ERROR: Socket bind() failed!");
+    perror("ERROR: Socket bind() failed!");
   }
   return m_rc;
 }
@@ -92,7 +88,7 @@ int socket::listen(size_t fifo_size) {
 }
 
 int socket::close() {
-  return m_handle.m_socket != 0 ? ::close(m_handle.m_socket) : 0;
+  return m_handle.m_socket > 0 ? ::close(m_handle.m_socket) : 0;
 }
 
 connection_handle* socket::accept() {
@@ -102,9 +98,9 @@ connection_handle* socket::accept() {
                              reinterpret_cast<
                                struct sockaddr*>(&p_con->m_sockaddr),
                              reinterpret_cast<socklen_t*>(&n));
-  if (p_con->m_socket == -1) {
+  if (p_con->m_socket < 0) {
     // error free memory...
-    ::perror("ERROR in accpet()!");
+    perror("ERROR in accpet()!");
     delete p_con;
     return NULL;
   }
@@ -116,7 +112,7 @@ int socket::connect() {
                    reinterpret_cast<struct sockaddr*>(&m_handle.m_sockaddr),
                    sizeof(struct sockaddr_in));
   if (m_rc != 0) {
-    ::perror("ERROR in connect()!");
+    perror("ERROR in connect()!");
   }
   return m_rc;
 }
@@ -124,10 +120,10 @@ int socket::connect() {
 int socket::recv(void* buffer, size_t len, int flags) {
   int rc = ::recv(m_handle.m_socket, buffer, len, flags);
   if (rc == 0) {
-    ::perror("ERROR in recv()! Connection was closed!");
+    perror("ERROR in recv()! Connection was closed!");
     m_rc = rc;
   } else if (rc == -1) {
-    ::perror("ERROR in recv()! ");
+    perror("ERROR in recv()! ");
     m_rc = rc;
   }
   return rc; // amount of bytes read
@@ -136,7 +132,7 @@ int socket::recv(void* buffer, size_t len, int flags) {
 int socket::send(void* data, size_t len, int flags) {
   int rc = ::send(m_handle.m_socket, data, len, flags);
   if (rc == -1) {
-    ::perror("ERROR in send()!");
+    perror("ERROR in send()!");
     m_rc = rc;
   }
   return rc; // amount of bytes send
@@ -150,7 +146,10 @@ uint16_t socket::get_port() const {
   return ntohs(m_handle.m_sockaddr.sin_port);
 }
 
-int socket::setsockopt(int optname, int* val) {
-  return ::setsockopt(m_handle.m_socket, SOL_SOCKET, optname,
-                      static_cast<void*>(val), sizeof(int));
+int socket::setsockopt(int optname, void* val, long unsigned int len) {
+  m_rc = ::setsockopt(m_handle.m_socket, SOL_SOCKET, optname, val, len);
+  if (m_rc) {
+    perror("ERROR: setsockopt failed!");
+  }
+  return m_rc;
 }
