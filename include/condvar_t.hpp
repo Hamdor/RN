@@ -25,23 +25,23 @@ namespace rna1 {
 class condvar_t {
  public:
   condvar_t(mutex_t& mutex) : m_lock(mutex) {
-    ::pthread_cond_init(&m_cond, NULL);
+    pthread_cond_init(&m_cond, NULL);
   }
   
   virtual ~condvar_t() {
-    ::pthread_cond_destroy(&m_cond);
+    pthread_cond_destroy(&m_cond);
   }
 
   int wait() {
-    return ::pthread_cond_wait(&m_cond, &m_lock.m_mutex);
+    return pthread_cond_wait(&m_cond, &m_lock.m_mutex);
   }
 
   int signal() {
-    return ::pthread_cond_signal(&m_cond);
+    return pthread_cond_signal(&m_cond);
   }
 
   int broadcast() {
-    return ::pthread_cond_broadcast(&m_cond);
+    return pthread_cond_broadcast(&m_cond);
   }
 
  private:
