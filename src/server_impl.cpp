@@ -22,22 +22,18 @@
 using namespace rna1;
 
 void* server_impl::exec(void* args) {
-  if (args == NULL) {
-    std::cout << "ERROR (server_impl) corrupt args" << std::endl;
-    return NULL;
-  }
-  server_options opts = *static_cast<server_options*>(args);
-  socket sock(AF_INET,SOCK_STREAM, IPPROTO_TCP, opts.m_port);
+  uint16_t port = *static_cast<uint16_t*>(args);
+  socket sock(AF_INET,SOCK_STREAM, IPPROTO_TCP, port);
   if (sock.has_error()) {
-    std::cout << "ERROR ::socket() failed! Port: " << opts.m_port << std::endl;
+    std::cout << "ERROR ::socket() failed! Port: " << port << std::endl;
     return NULL;
   }
   if (sock.bind()) {
-    std::cout << "ERROR ::bind() failed! Port: " << opts.m_port << std::endl;
+    std::cout << "ERROR ::bind() failed! Port: " << port << std::endl;
     return NULL;
   }
   if (sock.listen()) {
-    std::cout << "ERROR ::listen() failed! Port: " << opts.m_port << std::endl;
+    std::cout << "ERROR ::listen() failed! Port: " << port << std::endl;
     return NULL;
   }
   std::cout << "Server listen on port " << sock.get_port() << std::endl;
@@ -47,9 +43,8 @@ void* server_impl::exec(void* args) {
       // accept failed. We got already a error message
       continue;
     }
-    worker_options* wopts = new worker_options(handle, opts.m_fps);
     worker_impl* new_worker = new worker_impl();
-    new_worker->start(static_cast<void*>(wopts));
+    new_worker->start(static_cast<void*>(handle));
   }
   return NULL;
 }

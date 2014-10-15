@@ -21,15 +21,6 @@
 
 namespace rna1 {
 
-struct worker_options {
-  worker_options(connection_handle* handle, size_t fps)
-      : m_handle(handle), m_fps(fps) {
-    // nop
-  }
-  connection_handle* m_handle;
-  size_t             m_fps;
-};
-
 class worker_impl : public thread_t {
  protected:
   void* exec(void*);

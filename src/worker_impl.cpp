@@ -20,30 +20,13 @@
 
 #include <iostream>
 
-#include <unistd.h>
-
 using namespace rna1;
 
 void* worker_impl::exec(void* args) {
-  worker_options* p_args = static_cast<worker_options*>(args);
-  if (p_args == NULL) {
-    std::cout << "ERROR: (worker) corrupt worker_options" << std::endl;
-    this->detach();
-    delete this;
-    return NULL;
-  }
-  if (p_args->m_handle == NULL) {
-    std::cout << "ERROR: (worker) corrupt connection_handle" << std::endl;
-    this->detach();
-    delete p_args;
-    delete this;
-    return NULL;
-  }
-  socket sock(*p_args->m_handle);
-  int sleep = ((double) 1 / (double) p_args->m_fps) * 1000 * 1000;
+  connection_handle* p_handle = static_cast<connection_handle*>(args);
+  socket sock(*p_handle);
   std::cout << "New worker spawned (Addr: " << std::hex << sock.get_addr()
             << ", Port: "                   << std::dec << sock.get_port()
-            << ", fps: "                    << std::dec << p_args->m_fps
             << ")" << std::endl;
   ring_buffer* buffer = ring_buffer::get_instance();
   size_t pos = buffer->get_current_pos();
@@ -58,14 +41,13 @@ void* worker_impl::exec(void* args) {
         break;
       }
       rc += err;
-      ::usleep(sleep);
     }
+    buffer->wait_on_picture(pos);
     pos = (pos + 1) % buffer->size;
   }
   // cleanup
   this->detach();
-  delete p_args->m_handle;
-  delete p_args;
+  delete p_handle;
   delete this;
   return NULL;
 }
