@@ -36,7 +36,7 @@ void* worker_impl::exec(void* args) {
     int rc = 0;
     while (rc != sizeof(pic.m_data) && !sock.has_error() && m_running) {
       int err = sock.send(pic.m_data + rc, sizeof(pic.m_data) - rc, MSG_NOSIGNAL);
-      if (err == 0 || err == -1) {
+      if (err == -1) {
         m_running = false;
         break;
       }
