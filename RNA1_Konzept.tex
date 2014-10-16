@@ -1,0 +1,57 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+
+\title{Rechnernetze Aufgabe 1 Konzept}
+
+\author{
+  Triebe, Marian\\
+  \texttt{marian.triebe@haw-hamburg.de}
+  \and
+  Kirstein, Katja\\
+  \texttt{katja.kirstein@haw-hamburg.de}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Aufgabenbeschreibung}
+
+Es soll ein Server-Programm entwickelt werden, welches wie ein Multiplexer Bilder weiterleitet.
+Diese Bilder stammen von einer Kamera. Die einzelnen Bilder bestehen aus 320 x 240 Pixeln.
+Für jeden Pixel werden 3 Byte übertragen (RGB). Es soll möglich sein mindestens 20 Bilder die Sekunde
+zu übertragen, desweiteren soll das Programm die empfangenen Bilder
+der Kamera ausgeben. Die Kommunikation soll mit dem TCP/IP Protokoll abgehandelt werden. Mögliche
+Angriffsvektoren sind abzusichern. Der Server soll nach fehlerhaften Verhalten der Clienten möglichst
+ohne Störung weiterarbeiten.
+
+\section{Aufbau des Programms}
+
+Die Anwendung soll aus 4 Hauptklassen bestehen. Jeder dieser Hauptklassen implementiert unseren pthread Wrapper
+(thread\_t.hpp). Insgesamt wird es also in der Anwendung mindestens 4 Threads geben (inklusive Hauptthread).
+Jede aktive Verbindung zu einem Client wird jedoch durch einen zusätzlichen Thread abgearbeitet.
+Folgende Aufgaben sind auf diese 4 Hauptklassen aufzuteilen:
+\begin{enumerate}
+ \item Abholen der Bild Daten (fetch\_impl.hpp)
+ \item Warten auf Verbindungsanfragen von Clients (server\_impl.hpp)
+ \item Senden der Bild Daten zu Clients (worker\_impl.hpp)
+ \item Ausgabe der Bilder am lokalen Rechner (client\_impl.hpp)
+\end{enumerate}
+
+\section{Buffer Konzept}
+
+Die Bufferung soll mittels eines Ringbuffers gehandhabt werden. Für die Größe des Ringbuffers wollen wir erst einmal
+100 Bilder verwenden. Der Ringbuffer soll eine Funktion `wait\_on\_picture()` anbieten, welche den Aufrufer blockieren lässt,
+bis ein neues Bild im Buffer zur verfügung steht. Der Ringbuffer hat immer eine konstante Größe und kann somit nicht von
+langsam sendenden workern (bzw. langsam empfangenden Clients)  aufgeblasen werden. Nachteil hierbei, es können Bilder verloren gehen.
+
+\section{Angriffsvektoren}
+
+\begin{itemize}
+ \item Überflutung des Servers mit connect() anfragen
+ \item Clients lesen nur sehr kleine Datensätze
+ \item Clients warten lange zwischen dem empfangen der einzelnen Bilder
+\end{itemize}
+
+\end{document}
