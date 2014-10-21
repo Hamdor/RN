@@ -31,9 +31,16 @@ namespace rna1 {
 struct picture {
   char m_data[picture_width * picture_height * bytes_per_pixel];
 
+  /**
+   * Copy Constructor
+   **/
   picture(const picture& other) {
     std::memcpy(m_data, other.m_data, sizeof(m_data));
   }
+
+  /**
+   * Default Constructor
+   **/
   picture() {
     // nop
   }

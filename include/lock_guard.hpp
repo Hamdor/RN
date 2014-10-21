@@ -20,8 +20,16 @@
 
 namespace rna1 {
 
+/**
+ * Implementation of the `scoped locking` pattern
+ * should be similar to std::lock_guard (C++11)
+ **/
 class lock_guard {
  public:
+  /**
+   * Constructor, creates a lock_guard
+   * @param referenze to a `mutex_t`
+   **/
   lock_guard(mutex_t& mutex) : m_ref(mutex) {
     m_ref.Acquire();
   }

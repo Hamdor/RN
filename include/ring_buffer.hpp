@@ -30,6 +30,10 @@ namespace rna1 {
 
 class ring_buffer {
  public:
+  /**
+   * Get the instance of `ring_buffer`
+   * @return a pointer to the initialized `ring_buffer`
+   **/
   static ring_buffer* get_instance() {
     if (!instance) {
       instance = new ring_buffer();
@@ -38,6 +42,10 @@ class ring_buffer {
   }
  private:
   static ring_buffer* instance;
+
+  /**
+   * Default Constructor
+   **/
   ring_buffer() : m_current_pos(0), m_lock(), m_cond(m_lock) {
     // nop
   }
@@ -46,11 +54,29 @@ class ring_buffer {
 
  public:
   static const int size = max_size;
+  /**
+   * Return a `picture` from the `ring_buffer`
+   * @param  pos determines the position of the picture in the ring buffer
+   * @return the requested `picture` object
+   **/
   picture get_picture(size_t pos);
+
+  /**
+   * Returns the current internal index of the `ring_buffer`
+   * @return the current index
+   **/
   size_t get_current_pos();
 
+  /**
+   * Adds a new picture to the ring_buffer
+   **/
   void add_new_picture(picture pic);
   
+  /**
+   * This call block until a new picture is in the buffer
+   * @param num is the current picture, if the internal index
+   *        is equal to num this function is blocking
+   **/
   void wait_on_picture(size_t num);
 
  private:

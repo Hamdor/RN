@@ -23,7 +23,12 @@ namespace rna1 {
 
 class server_impl : public thread_t {
  protected:
-  void* exec(void*);
+  /**
+   * Main method of the thread
+   * @param  arg is a pointer to an argument
+   * @return a pointer to a return code or NULL
+   **/
+  void* exec(void* arg);
 };
 
 } // namespace rna1

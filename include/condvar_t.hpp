@@ -24,22 +24,46 @@ namespace rna1 {
 
 class condvar_t {
  public:
+  /**
+   * Creates a new condvar_t
+   * @param referenze to a mutex_t
+   **/
   condvar_t(mutex_t& mutex) : m_lock(mutex) {
     pthread_cond_init(&m_cond, NULL);
   }
   
+  /**
+   * Destructor
+   **/
   virtual ~condvar_t() {
     pthread_cond_destroy(&m_cond);
   }
 
+  /**
+   * Calling thread blocks on this condition variable
+   * @return EINVAL if the arguments were invalid
+   *         EINVAL different mutexes were given
+   *         EINVAL the mutex was not owned by the current
+   *                thread at the time of the call
+   **/
   int wait() {
     return pthread_cond_wait(&m_cond, &m_lock.m_mutex);
   }
 
+  /**
+   * Signal one waiting thread on this condition variable
+   * @return EINVAL the internal `pthread_cond_t` was not
+   *                initialized
+   **/
   int signal() {
     return pthread_cond_signal(&m_cond);
   }
 
+  /**
+   * Signal more than one waiting thread on this condition variable
+   * @return EINVAL the internal `pthread_cont_t` was not
+   *                initialized
+   **/
   int broadcast() {
     return pthread_cond_broadcast(&m_cond);
   }

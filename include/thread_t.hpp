@@ -25,13 +25,34 @@ class thread_t {
   thread_t();
   virtual ~thread_t();
 
+  /**
+   * Start the thread
+   * @param pointer to the arguments (Default: NULL)
+   **/
   void start(void* = NULL);
+
+  /**
+   * Join the thread
+   * TODO:
+   * maybe add ability to get the return code
+   **/
   void join();
 
+  /**
+   * Set the internal stored argument pointer
+   * @param args pointer to arguments
+   **/
   void set_args(void* args);
   
+  /**
+   * Check if the thread is running
+   **/
   bool is_running() const { return m_running; }
 
+  /**
+   * Detaches the thread.
+   * A detached thread can't be joined later.
+   **/
   int detach();
 
  protected:

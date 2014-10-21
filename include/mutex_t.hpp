@@ -21,20 +21,34 @@
 namespace rna1 {
 
 class mutex_t {
- friend class condvar_t;
+ friend class condvar_t; // condvar_t needs access to m_mutex
  public:
+  /**
+   * Default Constructor
+   **/
   mutex_t() {
     pthread_mutex_init(&m_mutex, NULL);
   }
 
+  /**
+   * Default Destructor
+   **/
   ~mutex_t() {
     pthread_mutex_destroy(&m_mutex);
   }
 
+  /**
+   * The calling thread locks the mutex
+   * This function block the calling thread until
+   * the mutex is acquired
+   **/
   void Acquire() {
     pthread_mutex_lock(&m_mutex);
   }
 
+  /**
+   * Returns the mutex
+   **/
   void Release() {
     pthread_mutex_unlock(&m_mutex);
   }

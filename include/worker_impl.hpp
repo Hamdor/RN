@@ -23,6 +23,11 @@ namespace rna1 {
 
 class worker_impl : public thread_t {
  protected:
+  /**
+   * Main method of the thread
+   * @param  arg is a pointer to an argument
+   * @return a pointer to a return code or NULL
+   **/
   void* exec(void*);
 };
 
