@@ -41,7 +41,7 @@ void* server_impl::exec(void* args) {
     connection_handle* handle = sock.accept();
     if (handle == NULL) {
       // accept failed. We got already a error message
-      continue;
+      return NULL;
     }
     worker_impl* new_worker = new worker_impl();
     new_worker->start(static_cast<void*>(handle));

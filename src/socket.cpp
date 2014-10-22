@@ -129,7 +129,7 @@ int socket::recv(void* buffer, size_t len, int flags) {
 int socket::send(void* data, size_t len, int flags) {
   int rc = ::send(m_handle.m_socket, data, len, flags);
   if (rc == -1) {
-    perror("ERROR in send()!");
+    //perror("ERROR in send()!");
     m_rc = rc;
   }
   return rc; // amount of bytes send
