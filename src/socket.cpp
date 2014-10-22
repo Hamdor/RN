@@ -90,6 +90,9 @@ int socket::close() {
 
 connection_handle* socket::accept() {
   connection_handle* p_con = new connection_handle();
+  // In C++ `new` won't return NULL, it will throw `std::bad_alloc`,
+  // if you want NULL to be returned use `new (nothrow) ...`
+  // https://stackoverflow.com/questions/3389420/will-new-operator-return-null
   int n = sizeof(struct sockaddr_in);
   p_con->m_socket = ::accept(m_handle.m_socket,
                              reinterpret_cast<

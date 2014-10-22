@@ -44,6 +44,9 @@ void* server_impl::exec(void* args) {
       return NULL;
     }
     worker_impl* new_worker = new worker_impl();
+    // In C++ `new` won't return NULL, it will throw `std::bad_alloc`,
+    // if you want NULL to be returned use `new (nothrow) ...`
+    // https://stackoverflow.com/questions/3389420/will-new-operator-return-null
     new_worker->start(static_cast<void*>(handle));
   }
   return NULL;
