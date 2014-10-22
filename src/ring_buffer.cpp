@@ -21,6 +21,7 @@ using namespace std;
 using namespace rna1;
 
 ring_buffer* ring_buffer::instance = NULL;
+mutex_t ring_buffer::s_lock;
 
 picture ring_buffer::get_picture(size_t pos) {
   lock_guard guard(m_lock);
@@ -34,7 +35,7 @@ size_t ring_buffer::get_current_pos() {
 
 void ring_buffer::add_new_picture(picture pic) {
   lock_guard guard(m_lock);
-  m_current_pos = (m_current_pos + 1) % 100;
+  m_current_pos = (m_current_pos + 1) % size;
   m_data[m_current_pos] = pic;
   m_cond.broadcast();
 }

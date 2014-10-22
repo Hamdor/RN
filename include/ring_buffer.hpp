@@ -17,12 +17,13 @@
 #define RNA1_RING_BUFFER_HPP
 
 #include "mutex_t.hpp"
+#include "lock_guard.hpp"
 #include "condvar_t.hpp"
 #include "picture.hpp"
 
 namespace {
 
-const int max_size = 100;
+const int max_size = 30;
 
 } // namepsace <anonymous>
 
@@ -36,11 +37,15 @@ class ring_buffer {
    **/
   static ring_buffer* get_instance() {
     if (!instance) {
-      instance = new ring_buffer();
+      lock_guard gurad(s_lock);
+      if (!instance) {
+        instance = new ring_buffer();
+      }
     }
     return instance;
   }
  private:
+  static mutex_t      s_lock;
   static ring_buffer* instance;
 
   /**
