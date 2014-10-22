@@ -25,6 +25,16 @@ using namespace rna1;
 void* worker_impl::exec(void* args) {
   connection_handle* p_handle = static_cast<connection_handle*>(args);
   socket sock(*p_handle);
+  struct timeval tv;
+  tv.tv_sec  = 5;
+  tv.tv_usec = 0;
+  if (sock.setsockopt(SO_RCVTIMEO, &tv, sizeof(struct timeval))) {
+    std::cerr << "Error can't set SO_RCVTIMEO!" << std::endl;
+    this->detach();
+    delete p_handle;
+    delete this;
+    return NULL;
+  }
   std::cout << "New worker spawned (Addr: " << std::hex << sock.get_addr()
             << ", Port: "                   << std::dec << sock.get_port()
             << ")" << std::endl;
