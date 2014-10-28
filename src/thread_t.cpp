@@ -30,8 +30,8 @@ void thread_t::start(void* args) {
   pthread_create(&m_pthread, NULL, (thread_t::entry_point), this);
 }
 
-void thread_t::join() {
-  pthread_join(m_pthread, NULL);
+void thread_t::join(void** retval) {
+  pthread_join(m_pthread, retval);
 }
 
 void thread_t::set_args(void* args) {

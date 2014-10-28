@@ -33,10 +33,8 @@ class thread_t {
 
   /**
    * Join the thread
-   * TODO:
-   * maybe add ability to get the return code
    **/
-  void join();
+  void join(void ** retval = NULL);
 
   /**
    * Set the internal stored argument pointer
