@@ -17,7 +17,6 @@
 #define RNA1_CONDVAR_HPP
 
 #include "mutex_t.hpp"
-
 #include <pthread.h>
 
 namespace rna1 {

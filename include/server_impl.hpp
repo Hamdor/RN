@@ -17,7 +17,6 @@
 #define RNA1_SERVER_IMPL_HPP
 
 #include "thread_t.hpp"
-#include "stdint.h"
 
 namespace rna1 {
 

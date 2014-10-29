@@ -17,7 +17,6 @@
 #define RNA1_WORKER_IMPL_HPP
 
 #include "thread_t.hpp"
-#include "socket.hpp"
 
 namespace rna1 {
 

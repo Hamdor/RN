@@ -16,9 +16,10 @@
 #include "socket.hpp"
 
 #include <iostream>
-
-#include <cerrno>
 #include <cstdio>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 
 using namespace rna1;
 

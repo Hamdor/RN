@@ -17,6 +17,7 @@
 
 #include "ring_buffer.hpp"
 #include "picture.hpp"
+#include "socket.hpp"
 
 #include <iostream>
 

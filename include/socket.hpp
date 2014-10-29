@@ -17,9 +17,6 @@
 #define RNA1_SOCKET_HPP
 
 #include <netinet/in.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
 
 namespace rna1 {
 
