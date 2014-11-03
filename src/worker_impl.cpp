@@ -18,11 +18,18 @@
 #include "server_impl.hpp"
 #include "ring_buffer.hpp"
 #include "picture.hpp"
-#include "socket.hpp"
 
 #include <iostream>
 
 using namespace rna1;
+
+void worker_impl::destroy(connection_handle* p_handle) {
+  this->detach();
+  delete p_handle;
+  // decrease connection count
+  server_impl::notify_death();
+  delete this;
+}
 
 void* worker_impl::exec(void* args) {
   connection_handle* p_handle = static_cast<connection_handle*>(args);
@@ -32,11 +39,7 @@ void* worker_impl::exec(void* args) {
   tv.tv_usec = 0;
   if (sock.setsockopt(SO_RCVTIMEO, &tv, sizeof(struct timeval))) {
     std::cerr << "Error can't set SO_RCVTIMEO!" << std::endl;
-    this->detach();
-    delete p_handle;
-    // decrease connection count
-    server_impl::notify_death();
-    delete this;
+    destroy(p_handle);
     return NULL;
   }
   //std::cout << "New worker spawned (Addr: " << std::hex << sock.get_addr()
@@ -59,11 +62,6 @@ void* worker_impl::exec(void* args) {
     buffer->wait_on_picture(pos);
     pos = (pos + 1) % buffer->size;
   }
-  // cleanup
-  this->detach();
-  delete p_handle;
-  // decrease connection count
-  server_impl::notify_death();
-  delete this;
+  destroy(p_handle);
   return NULL;
 }
