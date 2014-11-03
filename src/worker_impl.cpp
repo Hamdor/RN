@@ -34,6 +34,8 @@ void* worker_impl::exec(void* args) {
     std::cerr << "Error can't set SO_RCVTIMEO!" << std::endl;
     this->detach();
     delete p_handle;
+    // decrease connection count
+    server_impl::notify_death();
     delete this;
     return NULL;
   }
