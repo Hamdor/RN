@@ -17,10 +17,29 @@
 #define RNA1_SERVER_IMPL_HPP
 
 #include "thread_t.hpp"
+#include "mutex_t.hpp"
+#include "stdint.h"
 
 namespace rna1 {
 
+struct server_options {
+  server_options(uint16_t port, uint16_t max_clients)
+      : m_port(port), m_clients(max_clients) {
+    // nop
+  }
+  uint16_t m_port;
+  uint16_t m_clients;
+};
+
 class server_impl : public thread_t {
+  static uint16_t s_curr_clients;
+  static mutex_t  s_lock;
+ public:
+  /**
+   * Called from an `worker_impl` which is about to exit.
+   * this will decrease the s_curr_clients count.
+   **/
+  static void notify_death();
  protected:
   /**
    * Main method of the thread

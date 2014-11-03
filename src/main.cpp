@@ -33,6 +33,7 @@ namespace {
     serverport,
     camserver,
     camport,
+    maxclients,
     help
   };
 
@@ -42,17 +43,20 @@ namespace {
     { "server-port", required_argument, 0, static_cast<char>(serverport) },
     { "cam-server",  required_argument, 0, static_cast<char>(camserver)  },
     { "cam-port",    required_argument, 0, static_cast<char>(camport)    },
+    { "max-clients", required_argument, 0, static_cast<char>(maxclients) },
     { "help",        no_argument,       0, static_cast<char>(help)       }
   };
 
   struct arguments {
     arguments(uint16_t server_port, std::string cam_server,
-              uint16_t cam_port, bool no_client, bool no_server)
+              uint16_t cam_port, bool no_client, bool no_server,
+              uint16_t max_clients)
         : m_server_port(server_port),
           m_cam_server(cam_server),
           m_cam_port(cam_port),
           m_no_client(no_client),
-          m_no_server(no_server) {
+          m_no_server(no_server),
+          m_max_clients(max_clients) {
       // nop
     }
 
@@ -61,24 +65,26 @@ namespace {
     uint16_t    m_cam_port;
     bool        m_no_client;
     bool        m_no_server;
+    uint16_t    m_max_clients;
    private:
     arguments();
   };
 } // namespace <anonymous>
 
 void print_help() {
-  std::cout << "Usage: rna1 [Options]"                          << std::endl
-            << "Options:"                                       << std::endl
-            << "  --no-server          Start without server"    << std::endl
-            << "  --no-client          Start without client"    << std::endl
-            << "  --server-port=<arg>  Port to listen on"       << std::endl
-            << "  --cam-server=<arg>   IP of camera server"     << std::endl
-            << "  --cam-port=<arg>     Port of camera server"   << std::endl
-            << "  --help               Print this help message" << std::endl;
+  std::cout << "Usage: rna1 [Options]"                            << std::endl
+            << "Options:"                                         << std::endl
+            << "  --no-server          Start without server"      << std::endl
+            << "  --no-client          Start without client"      << std::endl
+            << "  --server-port=<arg>  Port to listen on"         << std::endl
+            << "  --cam-server=<arg>   IP of camera server"       << std::endl
+            << "  --cam-port=<arg>     Port of camera server"     << std::endl
+            << "  --max-clients=<arg>  Maximum amount of clients" << std::endl
+            << "  --help               Print this help message"   << std::endl;
 }
 
 arguments parse_args(int argc, char* argv[]) {
-  arguments args(5001, "127.0.0.1", 5000, false, false);
+  arguments args(5001, "127.0.0.1", 5000, false, false, 500);
   int opt = 0;
   int idx = 0;
   while ((opt = getopt_long_only(argc, argv, "", options,
@@ -91,13 +97,16 @@ arguments parse_args(int argc, char* argv[]) {
         args.m_no_client = true;
       } break;
       case serverport: {
-        args.m_server_port = ::atoi(optarg);
+        args.m_server_port = atoi(optarg);
       } break;
       case camserver: {
         args.m_cam_server = optarg;
       } break;
       case camport: {
-        args.m_cam_port = ::atoi(optarg);
+        args.m_cam_port = atoi(optarg);
+      } break;
+      case maxclients: {
+        args.m_max_clients = atoi(optarg);
       } break;
       case help: {
         print_help();
@@ -127,9 +136,10 @@ int main(int argc, char* argv[]) {
     client.start();
   }
   // prepare server
+  server_options sopts(args.m_server_port, args.m_max_clients);
   server_impl server;
   if (!args.m_no_server) {
-    server.start(&args.m_server_port);
+    server.start(&sopts);
   }
   // join threads
   fetch.join();

@@ -15,6 +15,7 @@
 
 #include "worker_impl.hpp"
 
+#include "server_impl.hpp"
 #include "ring_buffer.hpp"
 #include "picture.hpp"
 #include "socket.hpp"
@@ -59,6 +60,8 @@ void* worker_impl::exec(void* args) {
   // cleanup
   this->detach();
   delete p_handle;
+  // decrease connection count
+  server_impl::notify_death();
   delete this;
   return NULL;
 }

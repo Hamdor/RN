@@ -16,24 +16,33 @@
 #include "server_impl.hpp"
 
 #include "worker_impl.hpp"
+#include "lock_guard.hpp"
 #include "socket.hpp"
 #include <iostream>
 
 using namespace rna1;
 
+uint16_t server_impl::s_curr_clients = 0;
+mutex_t  server_impl::s_lock;
+
+void server_impl::notify_death() {
+  lock_guard guard(s_lock);
+  ++s_curr_clients;
+}
+
 void* server_impl::exec(void* args) {
-  uint16_t port = *static_cast<uint16_t*>(args);
-  socket sock(AF_INET,SOCK_STREAM, IPPROTO_TCP, port);
+  server_options opt = *static_cast<server_options*>(args);
+  socket sock(AF_INET,SOCK_STREAM, IPPROTO_TCP, opt.m_port);
   if (sock.has_error()) {
-    std::cout << "ERROR ::socket() failed! Port: " << port << std::endl;
+    std::cout << "ERROR ::socket() failed! Port: " << opt.m_port << std::endl;
     return NULL;
   }
   if (sock.bind()) {
-    std::cout << "ERROR ::bind() failed! Port: " << port << std::endl;
+    std::cout << "ERROR ::bind() failed! Port: " << opt.m_port << std::endl;
     return NULL;
   }
   if (sock.listen()) {
-    std::cout << "ERROR ::listen() failed! Port: " << port << std::endl;
+    std::cout << "ERROR ::listen() failed! Port: " << opt.m_port << std::endl;
     return NULL;
   }
   std::cout << "Server listen on port " << sock.get_port() << std::endl;
@@ -42,6 +51,19 @@ void* server_impl::exec(void* args) {
     if (handle == NULL) {
       // accept failed. We got already a error message
       return NULL;
+    }
+    if (s_curr_clients >= opt.m_clients) {
+      // server is full, close connection and delete allocated memory
+      // for the connection_handle
+      socket ssock(*handle);
+      ssock.close();
+      delete handle;
+      continue;
+    }
+    {
+      // increase client count
+      lock_guard guard(s_lock);
+      ++s_curr_clients;
     }
     worker_impl* new_worker = new worker_impl();
     // In C++ `new` won't return NULL, it will throw `std::bad_alloc`,
