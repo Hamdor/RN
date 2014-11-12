@@ -31,9 +31,15 @@ void* fetch_impl::exec(void* args) {
   }
   // get args from void ptr
   fetch_options* fopts = static_cast<fetch_options*>(args);
-  struct in_addr inp;
-  ::inet_aton(fopts->m_ip.c_str(), &inp);
-  socket sock(AF_INET,SOCK_STREAM, IPPROTO_TCP, fopts->m_port, inp.s_addr);
+  long ip_from_str = socket::get_addr_from_str(fopts->m_ip);
+  if (ip_from_str == -1) {
+    std::cerr << "ERROR in get_ip_from_str()" << std::endl;
+    return NULL;
+  }
+  //struct in_addr inp;
+  //::inet_aton(fopts->m_ip.c_str(), &inp);
+  //socket sock(AF_INET,SOCK_STREAM, IPPROTO_TCP, fopts->m_port, inp.s_addr);
+  socket sock(AF_INET, SOCK_STREAM, IPPROTO_TCP, fopts->m_port, ip_from_str);
   if (sock.connect()) {
     return NULL;
   }

@@ -16,10 +16,15 @@
 #include "socket.hpp"
 
 #include <iostream>
+#include <cstring>
 #include <cstdio>
+
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+
+#include <netdb.h>
+#include <arpa/inet.h>
 
 using namespace rna1;
 
@@ -54,10 +59,6 @@ int socket::bind() {
   if (m_rc != 0) {
     return m_rc;
   }
-  if (m_bound) {
-    std::cerr << "ERROR: Socket already bound!" << std::endl;
-    return -1;
-  }
   m_rc = ::bind(m_handle.m_socket,
                 reinterpret_cast<struct sockaddr*>(&m_handle.m_sockaddr),
                 sizeof(struct sockaddr_in));
@@ -72,10 +73,6 @@ int socket::bind() {
 int socket::listen(size_t fifo_size) {
   if (m_rc != 0) {
     return m_rc;
-  }
-  if (m_listen) {
-    std::cerr << "ERROR: Socket already listen!" << std::endl;
-    return -1;
   }
   if (!m_bound) {
     std::cerr << "ERROR: Socket is not bound!" << std::endl;
@@ -154,3 +151,28 @@ int socket::setsockopt(int optname, void* val, long unsigned int len) {
   }
   return m_rc;
 }
+
+long socket::get_addr_from_str(std::string host) {
+  struct addrinfo info;
+  struct addrinfo* res = NULL;
+  std::memset(&info, 0, sizeof(addrinfo));
+  info.ai_family   = PF_UNSPEC;
+  info.ai_socktype = SOCK_STREAM;
+  int rc = getaddrinfo(host.c_str(), NULL, &info, &res);
+  if (rc) {
+    std::cerr << "getaddrinfo() failed!" << std::endl;
+    return -1;
+  }
+  struct addrinfo* ptr = res;
+  long ip = 0;
+  while (ptr) {
+    if (ptr->ai_family == AF_INET) {
+      ip = ((struct sockaddr_in*)ptr->ai_addr)->sin_addr.s_addr;
+      break;
+    }
+    ptr = ptr->ai_next;
+  }
+  freeaddrinfo(res);
+  return ip; 
+}
+

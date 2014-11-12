@@ -16,6 +16,7 @@
 #ifndef RNA1_SOCKET_HPP
 #define RNA1_SOCKET_HPP
 
+#include <string>
 #include <netinet/in.h>
 
 namespace rna1 {
@@ -133,6 +134,8 @@ class socket {
    * Set socket options to this socket
    **/
   int setsockopt(int optname, void* val, long unsigned int len);
+
+  static long get_addr_from_str(std::string host);
 
  private:
   socket(const socket&);
