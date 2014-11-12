@@ -27,7 +27,7 @@ mutex_t  server_impl::s_lock;
 
 void server_impl::notify_death() {
   lock_guard guard(s_lock);
-  ++s_curr_clients;
+  --s_curr_clients;
 }
 
 void* server_impl::exec(void* args) {

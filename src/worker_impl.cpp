@@ -24,10 +24,9 @@
 using namespace rna1;
 
 void worker_impl::destroy(connection_handle* p_handle) {
+  server_impl::notify_death();
   this->detach();
   delete p_handle;
-  // decrease connection count
-  server_impl::notify_death();
   delete this;
 }
 
