@@ -1,0 +1,111 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+
+\title{Rechnernetze Aufgabe 2 Konzept}
+
+\author{
+  Triebe, Marian\\
+  \texttt{marian.triebe@haw-hamburg.de}
+  \and
+  Kirstein, Katja\\
+  \texttt{katja.kirstein@haw-hamburg.de}
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Aufgabenbeschreibung}
+Mit Hilfe von Routingtabellen sollen verschiedene Netzwerkeigenschaften getestet werden,
+dazu geh\"oren die Verz\"ogerungszeiten sowie die maximale Transferrate.
+Zum analysieren der Verz\"ogerungszeit kann der Befehl `ping` verwendet werden.
+Die Paketgr\"o{\ss}en sollen zwsichen 50 und 3000 variieren. Aus den gemessenen Zeiten
+soll ein Diagramm erstellt werden.
+
+\section{\"Ubertragung von großen Datenmengen}
+Gr\"o{\ss}ere Datenmengen k\"onnen mit Hilfe der Programme `netperf` und `netserver`
+\"ubertragen werden, die Programme arbeiten mit dem TCP Protokoll. Mit Hilfe von
+`wireshark` soll der Verkehr mitgeschnitten werden. Die mitgeschnittenen Daten k\"onnen
+dann mit Hilfe des `TCPAnalyser` visualisiert werden. Anhand der Visualisierung sollen
+Datenrate sowie RTT ermittelt werden. Zu kl\"aren ist die Frage warum die RTT nicht mit der
+zuvor erstellten Messung \"ubereinstimmt.
+
+\section{Messroute}
+Alle Routen sollen \"uber das Labornetzwerk (192.138.17.0 bzw. 192.168.18.0) f\"uhren.
+Es sind drei Messrouten zu konfigurieren und zu messen.
+\begin{itemize}
+ \item Direkte Verbindung zweier Rechner \"uber einen Switch
+ \item Verbindung \"uber einen Router
+ \item WAN-Verbindung (Wide Area Network)
+\end{itemize}
+
+\newpage
+
+\section{Konfiguration einer Messroute}
+Die Routen im Netzwerk k\"onnen mit dem Befehl `route` gesetzt werden.
+\begin{itemize}
+ \item Anlegen einer neuen Route: `route add -net 192.160.0.0/16 gw 192.159.1.1`,
+ in diesem Beispiel ist das Zielnetzwerk 192.160.0.0/16 und der Gateway ist 192.159.1.1.
+ \item L\"oschen einer Route: `route del -net Ziel/CIDR gw Gateway-Adresse`
+ \item Alle konfigurierten Routen anzeigen: `route` oder `route -n`
+\end{itemize}
+
+\section{Ablauf einer Messung}
+Zu den verschiedenen Messrouten gibt es folgende Fragen zu kl\"aren
+\begin{enumerate}
+ \item Direkte Verbindung zweier Rechner \"uber einen Switch
+ \begin{itemize}
+  \item Wie hoch ist die RTTI in Abhängigkeit von der Paketgröße?
+  Stimmt das mit den Erwartungen überein?
+  \item Wie hoch ist die maximale Transferrate bei der Übertragung größerer Datenmengen
+  mit TCP? Entspricht das den Erwartungen? Kann man Auswirkungen der Algorithmen zur Stauvermeidung erkennen?
+  \item Kann man Aussagen treffen zur Arbeitsweise der Switch?
+  \item Hat die TCP-Fenstergröße einen Einfluss?
+ \end{itemize}
+ \item Verbindung über einen Router
+ \begin{itemize}
+  \item Welchen Einfluss hat die Routerperformance auf die RTTI?
+  \item Wie verändert sich der Durchsatz?
+  \item Welche Eigenschaften haben die Schnittstellen zum Router?
+ \end{itemize}
+ \item WAN-Verbindung (Wide Area Network)
+ \begin{itemize}
+  \item Bestimmen Sie die RTTI
+  \item Berechnen Sie die Länge der simulierten Strecke
+  \item Bestimmen Sie die maximale Transferrate
+  \item Ermitteln Sie die Mindestgröße des TCP-Fensters, damit eine vollständige Ausnutzung der Leitung erfolgt.
+  Führen Sie hierfür Messungen mit unterschiedlichen Fenstergrößen durch. Tragen Sie die erzielte Transferrate als Funktion von der Fenstergröße auf.
+  Überprüfen Sie die Richtigkeit Ihrer Messungen
+  \item Kennzeichnen Sie in den Diagrammen die verschiedenen Phasen der Stauvermeidung
+ \end{itemize}
+\end{enumerate}
+
+\section{Programme und Befehle}
+\begin{itemize}
+ \item netserver
+ \begin{itemize}
+  \item L\"auft als Daemon im Hintergrund und wartet auf eingehende Verbindungen (TCP Port 12865)
+  \item F\"ur das starten sind keine Parameter notwendig
+  \item Dient als Gegenstelle auf dem entfernten Rechner
+ \end{itemize}
+ \item netperf
+ \begin{itemize}
+  \item Sendet Daten an den `netserver` Daemon
+  \item `netperf -H ziel` spezifiziert den Zielrechner
+  \item Beispieleingabe `netperf -H 192.168.1.1 -l -200000 -- -S 65536`
+ \end{itemize}
+\end{itemize}
+
+\section{Absch\"atzung der erwarteten Ergebnisse}
+Wir erwarten sehr niedrige RTT Zeiten, da Strecke die in dem lokalen Netzwerk zur\"uckgelegt
+werden muss eher gering ist. Sollten sich die Messwerte von `ping` sowie `netserver/netperf` zu
+sehr unterscheiden, wird das wahrscheinlich am von `ping` verwendeten ICMP Protokoll liegen.
+Desweiteren sch\"atzen wir, dass der WAN Aufbau sowie die Verbindung \"uber den Router die schlechteste
+Netzwerkleistung zeigen werden.
+\newline
+
+\textit{Fragestellungen der einzelnen Teilaufgaben,
+sowie Beschreibung der Programme sind der Aufgabenstellung entnommen}
+
+\end{document}
