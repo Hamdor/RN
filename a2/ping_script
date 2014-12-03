@@ -1,5 +1,12 @@
 #!/bin/bash
-for ((i=50;i<5000;i+=500));
+
+startval=50
+endval=5000
+interval=500
+addr="192.168.18.132"
+repetitions=3
+output="setup1.dat"
+
+for ((i=$startval; i < $endval; i += $interval));
 do
-  ping 192.168.18.132 -s $i -c 3;
-done | awk '/time=/{print $1, $7}'
+  ping $addr -s $i -c $repetitions; done | awk '/time=/{print $1, substr($7, 6)}' > $output

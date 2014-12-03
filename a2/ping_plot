@@ -1,6 +1,6 @@
 #!/usr/bin/gnuplot -persist
 set grid
-plot "1.dat"
+plot "setup1.dat"
 f(x)=a+b*x
-fit f(x) "1.dat" via a,b
-plot "1.dat" , f(x)
+fit f(x) "setup1.dat" via a,b
+plot "setup1.dat" , f(x)
