@@ -1,0 +1,5 @@
+#!/bin/bash
+for ((i=50;i<5000;i+=500));
+do
+  ping 192.168.18.132 -s $i -c 3;
+done | awk '/time=/{print $1, $7}'
