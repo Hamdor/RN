@@ -29,3 +29,8 @@ rna1
 *.vrb
 *.vpp~*
 *.vpp.bak
+a3/uml/bin/*
+a3/uml/lib/*
+a3/uml/ml/topo.py
+a3/uml/topo.pyc
+a3/uml/topo.py
