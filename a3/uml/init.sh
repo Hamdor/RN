@@ -36,7 +36,11 @@ ifconfig lo 127.0.0.1/24 up
 case $name in
   r1)
     ifconfig eth0 172.16.11.1/24 up
-    # hier die Routingtabellen einstellen:
+    # Routing   |     Zielnetz     |   Gateway
+    #-----------+------------------+-------------
+    route add -net 172.16.12.0/24 gw 172.16.11.2
+    route add -net 172.16.15.0/24 gw 172.16.11.2
+    route add -net 172.16.14.0/24 gw 172.16.11.2
 
 	# Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
@@ -46,26 +50,32 @@ case $name in
     ifconfig eth0 172.16.11.2/24 up
     ifconfig eth1 172.16.12.1/24 up
     ifconfig eth2 172.16.15.1/24 up
-    # hier die Routingtabellen einstellen:
+    # Routing   |     Zielnetz     |   Gateway
+    #-----------+------------------+-------------
+    route add -net 172.16.14.0/24 gw 172.16.15.2
 
-	# Loesche alle vorhandenen Firewall-Eintraege
+    # Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
     # hier die iptables-Befehle eintragen:
   ;;
   r3)
     ifconfig eth0 172.16.12.2/24 up
-    # hier die Routingtabellen einstellen:
+    # Routing   |     Zielnetz     |   Gateway
+    #-----------+------------------+-------------
+    route add -net 172.16.11.0/24 gw 172.16.12.1
 
-	# Loesche alle vorhandenen Firewall-Eintraege
+    # Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
     # hier die iptables-Befehle eintragen:
   ;;
   r4)
     ifconfig eth0 172.16.12.3/24 up
     ifconfig eth1 172.16.103.2/24 up
-    # hier die Routingtabellen einstellen:
+    # Routing   |     Zielnetz     |   Gateway
+    #-----------+------------------+-------------
+    route add -net 172.16.11.0/24 gw 172.16.12.1
 
-	# Loesche alle vorhandenen Firewall-Eintraege
+    # Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
     # hier die iptables-Befehle eintragen:
   ;;
@@ -73,9 +83,10 @@ case $name in
     ifconfig eth0 172.16.103.1/24 up
     ifconfig eth1 172.16.106.1/24 up
     ifconfig eth2 172.16.207.1/24 up
-    # hier die Routingtabellen einstellen:
+    # Routing   |     Zielnetz     |   Gateway
+    #-----------+------------------+-------------
 
-	# Loesche alle vorhandenen Firewall-Eintraege
+    # Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
     # hier die iptables-Befehle eintragen:
   ;;
@@ -83,25 +94,31 @@ case $name in
     ifconfig eth0 172.16.106.2/24 up
     ifconfig eth1 172.16.15.2/24 up
     ifconfig eth2 172.16.14.1/24 up
-    # hier die Routingtabellen einstellen:
+    # Routing   |     Zielnetz     |   Gateway
+    #-----------+------------------+-------------
+    route add -net 172.16.11.0/24 gw 172.16.15.1
 
-	# Loesche alle vorhandenen Firewall-Eintraege
+    # Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
     # hier die iptables-Befehle eintragen:
   ;;
   r7)
     ifconfig eth0 172.16.14.2/24 up
-    # hier die Routingtabellen einstellen:
+    # Routing   |     Zielnetz     |   Gateway
+    #-----------+------------------+-------------
+    route add -net 172.16.15.0/24 gw 172.16.14.1
+    route add -net 172.16.11.0/24 gw 172.16.14.1
 
-	# Loesche alle vorhandenen Firewall-Eintraege
+    # Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
     # hier die iptables-Befehle eintragen:
   ;;
   r8)
     ifconfig eth0 172.16.207.2/24 up
-    # hier die Routingtabellen einstellen:
+    # Routing   |     Zielnetz     |   Gateway
+    #-----------+------------------+-------------
 
-	# Loesche alle vorhandenen Firewall-Eintraege
+    # Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
     # hier die iptables-Befehle eintragen:
   ;;
