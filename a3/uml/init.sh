@@ -125,6 +125,8 @@ case $name in
     route add -net 172.16.15.0/24 gw 172.16.14.1
     route add -net 172.16.11.0/24 gw 172.16.14.1
     route add -net 172.16.12.0/24 gw 172.16.14.1
+    route add -net 172.16.106.0/24 gw 172.16.14.1
+    route add -net 172.16.103.0/24 gw 172.16.14.1
 
     # Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
