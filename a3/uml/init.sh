@@ -61,6 +61,9 @@ case $name in
     # Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
     # hier die iptables-Befehle eintragen:
+    iptables -P INPUT DROP
+    iptables -P OUTPUT DROP
+    iptables -P FORWARD DROP
   ;;
   r3)
     ifconfig eth0 172.16.12.2/24 up
@@ -89,6 +92,9 @@ case $name in
     # Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
     # hier die iptables-Befehle eintragen:
+    iptables -P INPUT DROP
+    iptables -P OUTPUT DROP
+    iptables -P FORWARD DROP
   ;;
   r5)
     ifconfig eth0 172.16.103.1/24 up
@@ -118,6 +124,9 @@ case $name in
     # Loesche alle vorhandenen Firewall-Eintraege
     iptables -F
     # hier die iptables-Befehle eintragen:
+    iptables -P INPUT DROP
+    iptables -P OUTPUT DROP
+    iptables -P FORWARD DROP
   ;;
   r7)
     ifconfig eth0 172.16.14.2/24 up
