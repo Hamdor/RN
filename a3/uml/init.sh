@@ -46,10 +46,11 @@ case $name in
     ifconfig eth2 172.16.15.1/24 up
     # Routing   |     Zielnetz     |   Gateway
     #-----------+------------------+-------------
+    route add         default      gw 172.16.12.3
     route add -net 172.16.14.0/24 gw 172.16.15.2
     route add -net 172.16.103.0/24 gw 172.16.12.3
     route add -net 172.16.106.0/24 gw 172.16.12.3
-    route add         default      gw 172.16.12.3
+
     ## Default Policy DROP
     iptables -P INPUT   DROP
     iptables -P OUTPUT  DROP
@@ -89,11 +90,11 @@ case $name in
     ifconfig eth1 172.16.103.2/24 up
     # Routing   |     Zielnetz     |   Gateway
     #-----------+------------------+-------------
+    route add         default      gw 172.16.103.1
     route add -net 172.16.11.0/24 gw 172.16.12.1
     route add -net 172.16.14.0/24 gw 172.16.12.1
     route add -net 172.16.15.0/24 gw 172.16.12.1
     route add -net 172.16.106.0/24 gw 172.16.103.1
-    route add         default      gw 172.16.12.3
     ## Default Policy DROP
     iptables -P INPUT   DROP
     iptables -P OUTPUT  DROP
@@ -151,7 +152,7 @@ case $name in
     route add -net 172.16.11.0/24 gw 172.16.15.1
     route add -net 172.16.12.0/24 gw 172.16.15.1
     route add -net 172.16.103.0/24 gw 172.16.106.1
-    route add         default      gw 172.16.12.3
+    route add         default      gw 172.16.106.1
     ## Default Policy DROP
     iptables -P INPUT   DROP
     iptables -P OUTPUT  DROP
@@ -187,9 +188,22 @@ case $name in
   ;;
 esac
 #################################################################
+## Verbindungen die schon aufgebaut sind akzeptieren           ##
+#################################################################
+iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+#################################################################
+## Ausgehende HTTP/FTP Verbindungen                            ##
+#################################################################
+iptables -A OUTPUT -m state --state NEW -p tcp --syn --dport 20 -j ACCEPT
+iptables -A OUTPUT -m state --state NEW -p tcp --syn --dport 21 -j ACCEPT
+iptables -A OUTPUT -m state --state NEW -p tcp --syn --dport 80 -j ACCEPT
+
+#################################################################
 ## HTTP/FTP Forwarding                                         ##
 #################################################################
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A FORWARD -m state --state NEW -p tcp --syn --dport 20 -j ACCEPT
 iptables -A FORWARD -m state --state NEW -p tcp --syn --dport 21 -j ACCEPT
 iptables -A FORWARD -m state --state NEW -p tcp --syn --dport 80 -j ACCEPT
