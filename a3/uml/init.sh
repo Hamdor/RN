@@ -66,18 +66,23 @@ case $name in
     iptables -A INPUT   -p icmp --icmp-type echo-reply -j ACCEPT
     iptables -A OUTPUT  -p icmp --icmp-type echo-reply -j ACCEPT
     iptables -A FORWARD -p icmp --icmp-type echo-reply -j ACCEPT
+    #################################################################
+    ## SSH von R1 sowie R7 auf R3 (DMZ) erlauben                   ##
+    #################################################################
+    iptables -A FORWARD -p tcp -s 172.16.11.1 -d 172.16.12.2 --dport 22 -j ACCEPT
+    iptables -A FORWARD -p tcp -s 172.16.14.2 -d 172.16.12.2 --dport 22 -j ACCEPT
+    iptables -A FORWARD -p tcp --sport 22 -j ACCEPT
   ;;
   r3)
     ifconfig eth0 172.16.12.2/24 up
     # Routing   |     Zielnetz     |   Gateway
     #-----------+------------------+-------------
     route add -net 172.16.11.0/24 gw 172.16.12.1
-    route add -net 172.16.106.0/24 gw 172.16.12.3
+    route add -net 172.16.14.0/24 gw 172.16.12.3
     route add -net 172.16.15.0/24 gw 172.16.12.1
     route add -net 172.16.103.0/24 gw 172.16.12.3
-    route add -net 172.16.14.0/24 gw 172.16.12.3
-    route add         default     gw 172.16.12.3
-    ## TODO ALLES DROPPEN BIS AUF SSH, HTTP, FTP, PING
+    route add -net 172.16.106.0/24 gw 172.16.12.3
+    route add         default      gw 172.16.12.3
   ;;
   r4)
     ifconfig eth0 172.16.12.3/24 up
@@ -85,10 +90,10 @@ case $name in
     # Routing   |     Zielnetz     |   Gateway
     #-----------+------------------+-------------
     route add -net 172.16.11.0/24 gw 172.16.12.1
-    route add -net 172.16.106.0/24 gw 172.16.103.1
-    route add -net 172.16.14.0/24 gw 172.16.103.1
+    route add -net 172.16.14.0/24 gw 172.16.12.1
     route add -net 172.16.15.0/24 gw 172.16.12.1
-    route add         default     gw 172.16.103.1
+    route add -net 172.16.106.0/24 gw 172.16.103.1
+    route add         default      gw 172.16.12.3
     ## Default Policy DROP
     iptables -P INPUT   DROP
     iptables -P OUTPUT  DROP
@@ -112,8 +117,8 @@ case $name in
     ifconfig eth2 172.16.207.1/24 up
     # Routing   |     Zielnetz     |   Gateway
     #-----------+------------------+-------------
-    route add -net 172.16.12.0/24 gw 172.16.103.2
     route add -net 172.16.11.0/24 gw 172.16.103.2
+    route add -net 172.16.12.0/24 gw 172.16.103.2
     route add -net 172.16.14.0/24 gw 172.16.106.2
     route add -net 172.16.15.0/24 gw 172.16.106.2
     ## Default Policy DROP
@@ -124,7 +129,6 @@ case $name in
     ## Pings von internen Netzwerken erlauben                      ##
     ## Eingehende Pings werden geblockt                            ##
     #################################################################
-    ## TODO FIXME
     ## Ping senden
     iptables -A INPUT   -p icmp --icmp-type echo-request -j ACCEPT
     iptables -A OUTPUT  -p icmp --icmp-type echo-request -j ACCEPT
@@ -145,9 +149,9 @@ case $name in
     # Routing   |     Zielnetz     |   Gateway
     #-----------+------------------+-------------
     route add -net 172.16.11.0/24 gw 172.16.15.1
+    route add -net 172.16.12.0/24 gw 172.16.15.1
     route add -net 172.16.103.0/24 gw 172.16.106.1
-    route add -net 172.16.12.0/24 gw 172.16.106.1
-    route add         default     gw 172.16.106.1
+    route add         default      gw 172.16.12.3
     ## Default Policy DROP
     iptables -P INPUT   DROP
     iptables -P OUTPUT  DROP
@@ -164,21 +168,28 @@ case $name in
     iptables -A INPUT   -p icmp --icmp-type echo-reply -j ACCEPT
     iptables -A OUTPUT  -p icmp --icmp-type echo-reply -j ACCEPT
     iptables -A FORWARD -p icmp --icmp-type echo-reply -j ACCEPT
+    #################################################################
+    ## SSH von R1 sowie R7 auf R3 (DMZ) erlauben                   ##
+    #################################################################
+    ## FIXME
   ;;
   r7)
     ifconfig eth0 172.16.14.2/24 up
     # Routing   |     Zielnetz     |   Gateway
     #-----------+------------------+-------------
     route add         default      gw 172.16.14.1
-    ## TODO ALLES DROPPEN?
   ;;
   r8)
-    ## Soll dieser PC einen Rechner im Internet darstellen?
-    ## Dann hier keine weiteren Einstellungen ausser den Gateway
     ifconfig eth0 172.16.207.2/24 up
     # Routing   |     Zielnetz     |   Gateway
     #-----------+------------------+-------------
     route add         default      gw 172.16.207.1
   ;;
 esac
-
+#################################################################
+## HTTP/FTP Forwarding                                         ##
+#################################################################
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -m state --state NEW -p tcp --syn --dport 20 -j ACCEPT
+iptables -A FORWARD -m state --state NEW -p tcp --syn --dport 21 -j ACCEPT
+iptables -A FORWARD -m state --state NEW -p tcp --syn --dport 80 -j ACCEPT
