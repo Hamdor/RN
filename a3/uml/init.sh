@@ -47,7 +47,7 @@ case $name in
     # Routing   |     Zielnetz     |   Gateway
     #-----------+------------------+-------------
     route add         default      gw 172.16.12.3
-    route add -net 172.16.14.0/24 gw 172.16.15.2
+    route add -net 172.16.14.0/24  gw 172.16.15.2
     route add -net 172.16.103.0/24 gw 172.16.12.3
     route add -net 172.16.106.0/24 gw 172.16.12.3
 
@@ -70,17 +70,20 @@ case $name in
     #################################################################
     ## SSH von R1 sowie R7 auf R3 (DMZ) erlauben                   ##
     #################################################################
-    iptables -A FORWARD -p tcp -s 172.16.11.1 -d 172.16.12.2 --dport 22 -j ACCEPT
-    iptables -A FORWARD -p tcp -s 172.16.14.2 -d 172.16.12.2 --dport 22 -j ACCEPT
-    iptables -A FORWARD -p tcp --sport 22 -j ACCEPT
+    ## R1
+    iptables -A FORWARD -p tcp -s 172.16.11.1 -d 172.16.12.2 --sport 513:65535 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+    iptables -A FORWARD -p tcp -s 172.16.12.2 -d 172.16.11.1 --sport 22 --dport 513:65535 -m state --state ESTABLISHED -j ACCEPT
+    ## R7
+    iptables -A FORWARD -p tcp -s 172.16.14.2 -d 172.16.12.2 --sport 513:65535 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+    iptables -A FORWARD -p tcp -s 172.16.12.2 -d 172.16.14.2 --sport 22 --dport 513:65535 -m state --state ESTABLISHED -j ACCEPT
   ;;
   r3)
     ifconfig eth0 172.16.12.2/24 up
     # Routing   |     Zielnetz     |   Gateway
     #-----------+------------------+-------------
-    route add -net 172.16.11.0/24 gw 172.16.12.1
-    route add -net 172.16.14.0/24 gw 172.16.12.3
-    route add -net 172.16.15.0/24 gw 172.16.12.1
+    route add -net 172.16.11.0/24  gw 172.16.12.1
+    route add -net 172.16.14.0/24  gw 172.16.12.1
+    route add -net 172.16.15.0/24  gw 172.16.12.1
     route add -net 172.16.103.0/24 gw 172.16.12.3
     route add -net 172.16.106.0/24 gw 172.16.12.3
     route add         default      gw 172.16.12.3
@@ -91,9 +94,9 @@ case $name in
     # Routing   |     Zielnetz     |   Gateway
     #-----------+------------------+-------------
     route add         default      gw 172.16.103.1
-    route add -net 172.16.11.0/24 gw 172.16.12.1
-    route add -net 172.16.14.0/24 gw 172.16.12.1
-    route add -net 172.16.15.0/24 gw 172.16.12.1
+    route add -net 172.16.11.0/24  gw 172.16.12.1
+    route add -net 172.16.14.0/24  gw 172.16.12.1
+    route add -net 172.16.15.0/24  gw 172.16.12.1
     route add -net 172.16.106.0/24 gw 172.16.103.1
     ## Default Policy DROP
     iptables -P INPUT   DROP
@@ -172,7 +175,13 @@ case $name in
     #################################################################
     ## SSH von R1 sowie R7 auf R3 (DMZ) erlauben                   ##
     #################################################################
-    ## FIXME
+    ## R7
+    iptables -A FORWARD -p tcp -s 172.16.14.2 -d 172.16.12.2 --sport 513:65535 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+    iptables -A FORWARD -p tcp -s 172.16.12.2 -d 172.16.14.2 --sport 22 --dport 513:65535 -m state --state ESTABLISHED -j ACCEPT
+    #################################################################
+    ## NAT                                                         ##
+    #################################################################
+    iptables -t nat -A POSTROUTING -o eth0 -i eth2 -j MASQUERADE
   ;;
   r7)
     ifconfig eth0 172.16.14.2/24 up
