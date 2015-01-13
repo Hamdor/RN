@@ -1,7 +1,8 @@
 #!/bin/bash
-target="192.168.1.1"
-runtime=60
-for i in $(seq 10 16); do
+target="192.168.18.134"
+runtime=20
+for i in $(seq 10 18); do
   wsize=$( echo 2^$i | bc )
-  netperf -H $target -l $runtime -- -S $wsize
+  output=$(netperf -H $target -l $runtime -- -S $wsize)
+  echo $output | awk '{print $23 " " $27}' >> $1
 done
