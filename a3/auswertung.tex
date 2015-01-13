@@ -39,7 +39,7 @@
 \newpage
 
 \section{Routingtabellen}
-Das erstellen der Routingtabellen verlief wie geplant, jedoch stellte sich die Frage ob
+Das erstellen der Routingtabellen verlief wie geplant, jedoch stellte sich die Frage, ob
 die Rechner (R1-R7) aus den internen Netzen mit R8 kommunizieren dürfen. Wir nehmen an, dass R8
 einen Rechner aus dem Internet darstellen soll, da R8 auch nicht im Topologie-Plan gelistet ist.
 Die Rechner aus den internen Netzen erreichen R8 somit über die default Routings ihres jeweiligen Routers.\\
@@ -48,7 +48,7 @@ Kritisch waren die Routingtabellen für R6 sowie R2, da darauf geachtet werden m
 nur über das VPN Netzwerk (172.16.15.0/24) erreichbar sein darf. Somit ist gewehrleistet das die SSH Verbindung von R7
 in die DMZ (R3) nicht über das Internet geroutet wird.\\
 \newline
-Das korrekte routing über die einzelnen Knoten wurde mit \textit{tracert} sowie \textit{ping} geprüft.
+Das korrekte Routing über die einzelnen Knoten wurde mit \textit{tracert} sowie \textit{ping} geprüft.
 
 \section{Portscan DMZ (ohne Firewall)}
 Der Portscan ergab, dass auf R3 die folgenden Dienste aktiv sind:
@@ -142,7 +142,7 @@ Selbiges gilt für Verbindungen von R7 zu R3, in Figure 2 zu sehen.
 \newpage
 
 \section{Stateful Firewall}
-Mit hilfe der Stateful Option von \textit{iptables} ist es möglich Verbindungen die in bestimmten Zuständen sind zu erlauben. Bspw. wenn
+Mit Hilfe der Stateful Option von \textit{iptables} ist es möglich Verbindungen die in bestimmten Zuständen sind zu erlauben. Bspw. wenn
 bei einem TCP Paket das SYN Flag gesetzt ist, oder eine Verbindung bereits aufgebaut wurde (ESTABLISHED). Wir erlauben alle Pakete die
 bereits zu einer bestehenden Verbindung zugeordnet werden können (Listung 7).
 \begin{lstlisting}[language=bash,caption={Stateful ESTABLISHED,RELATED}]
