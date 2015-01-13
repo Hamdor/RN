@@ -107,22 +107,26 @@ an der Gegenstelle sowie am Sendenden PC die Pfade per \textit{route} Befehl kon
 \subsection{TCP-Übertragung}
 \includegraphics[scale=0.75]{setup_wan1.png}
 
+\subsection{Windowsize}
+\includegraphics[scale=0.75]{wan1_windows.png}
+
 \subsection{Spezifische Fragen}
 \begin{itemize}
- \item Wie in Abbildung X zu erkennen liegt die RTTI zwischen 160 und 165 Millisekunden.
+ \item Wie in der Abbildung von 4.2 zu erkennen, liegt die RTTI zwischen 80 und 100 Millisekunden.
  \item {Zum Berechnen der Strecke nehmen wir folgende Formel
  \begin{equation}
-  l=RTTI*c
+  l=RTTI*2/3*c
  \end{equation}
- Setzt man für die RTTI nun 160 Millisekunden ein und für c die Lichtgeschwindigkeit in Meter/s,
- so erhällt man eine Strecker der Länge von 47966 Kilometern.}
- \item Kein.Plan.
+ Setzt man für die RTTI nun 80 Millisekunden ein und für c die Lichtgeschwindigkeit in Meter/s,
+ so erhällt man eine Strecke der Länge von 15989 Kilometern.}
+ \item Wie in 4.4 zu sehen ist, wird die Bandbreite erst ab einer Fenstergröße von etwas mehr als 130000 byte vollständig ausgenutzt.
 \end{itemize}
 
 %% WAN2
 \section{WAN-Verbindung 2}
 
 \subsection{Aufbau}
+Die zweitee WAN Verbindung wird mit dem Gateway \textit{192.168.17.241} bzw. \textit{192.168.18.241} auf den PCs wie bei WAN 1 mit dem route Befehl eingerichtet.
 
 \subsection{Ping Messwerte}
 \includegraphics[scale=0.75]{ping_setup_wan2.png}
@@ -130,13 +134,27 @@ an der Gegenstelle sowie am Sendenden PC die Pfade per \textit{route} Befehl kon
 \subsection{TCP-Übertragung}
 \includegraphics[scale=0.75]{setup_wan2.png}
 
+\subsection{Windowsize}
+\includegraphics[scale=0.75]{wan2_windows.png}
+
 \subsection{Spezifische Fragen}
+\begin{itemize}
+ \item Aus der Abbildung von 5.2 ist zu erkennen, dass die RTTI zwischen 160 und 165 Millisekunden liegt.
+ \item {Formel zum Berechnen der Strecke: 
+ \begin{equation}
+  l=RTTI*2/3*c
+ \end{equation}
+ Mit dem RTTI von 160 ergibt sich eine Strecke von 31998 Kilometern.
+ \item In der Abblidung aus 5.4 kann man eine maximale Fenstergröße von 425984 Byte. Das Diagramm hört leider dort auf, 
+ für weitere Vergewisserung müsste eine erneute Messung durchegführt werden.
+\end{itemize}
 
 
 %% WAN3
 \section{WAN-Verbindung 3}
 
 \subsection{Aufbau}
+Die dritte WAN-Verbindung wird wie die Zwei vorherigen eingestellt, diesesmal mit dem Gateway \textit{192.168.17/18.242}
 
 \subsection{Ping Messwerte}
 \includegraphics[scale=0.75]{ping_setup_wan3.png}
@@ -145,13 +163,27 @@ an der Gegenstelle sowie am Sendenden PC die Pfade per \textit{route} Befehl kon
 \subsection{TCP-Übertragung}
 Nicht gespeichert...
 
+\subsection{Windowsize}
+\includegraphics[scale=0.75]{wan3_windows.png}
+
 \subsection{Spezifische Fragen}
+\begin{itemize}
+ \item Aus der Abbildung von 6.2 ist zu erkennen, dass die RTTI zwischen 80 und 100 Millisekunden liegt.
+ \item {Formel zum Berechnen der Strecke: 
+ \begin{equation}
+  l=RTTI*2/3*c
+ \end{equation}
+ Mit der Formel kommt man auf eine Strecke von 15989 Kilometern.
+ \item Die Abblidung aus  6.4 zeigt wie die Fenstergröße von 65536 erreicht wird, und das darauf folgende Paket
+ weggeworfen wird, bei dieser fehlerhaften Verbindung.
+\end{itemize}
 
 
 %% WAN4
 \section{WAN-Verbindung 4}
 
 \subsection{Aufbau}
+Mit dem Gateway \textit{192.168.17.243} und \textit{192.168.18.243} wird diese wie alle anderen konfiguriert
 
 \subsection{Ping Messwerte}
 \includegraphics[scale=0.75]{ping_setup_wan4.png}
@@ -159,8 +191,20 @@ Nicht gespeichert...
 \subsection{TCP-Übertragung}
 \includegraphics[scale=0.75]{setup_wan4.png}
 
-\subsection{Spezifische Fragen}
+\subsection{Windowsize}
+\includegraphics[scale=0.75]{wan4_windows.png}
 
+\subsection{Spezifische Fragen}
+\begin{itemize} 
+ \item Aus der Abbildung von 5.2 ergibt sich eine RTTI zwischen 80 und 100 Millisekunden.
+ \item {Formel zum Berechnen der Strecke: 
+ \begin{equation}
+  l=RTTI*2/3*c
+ \end{equation}
+ Man kommt wieder auf die selbe Entfernung von 15989 Kilometern.
+ \item Wie in der Abblidung 7.4 zu sehen, ist die ideale Fenstergröße 131072 Byte um die Verbindung auszunutzen.
+ 
+ 
 %% Anhang
 \section{Anhang}
 
