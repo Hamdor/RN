@@ -1,0 +1,5 @@
+#!/usr/bin/gnuplot -persist
+set grid
+set xlabel "Windowsize"
+set ylabel "Mbit/s"
+plot "wan1.dat" using 1:2 with linespoints
