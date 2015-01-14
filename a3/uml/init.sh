@@ -196,7 +196,7 @@ case $name in
     #################################################################
     ## NAT                                                         ##
     #################################################################
-    iptables -t nat -A POSTROUTING -o eth0 -i eth2 -j MASQUERADE
+    iptables -t nat -A POSTROUTING -o eth0 -s 172.16.14.0/24 -j MASQUERADE
   ;;
   r7)
     ifconfig eth0 172.16.14.2/24 up
