@@ -1,6 +1,8 @@
 #!/usr/bin/gnuplot -persist
 set grid
-plot "setup1.dat"
+plot "setup6.dat"
 f(x)=a+b*x
-fit f(x) "setup1.dat" via a,b
-plot "setup1.dat" , f(x)
+fit f(x) "setup6.dat" via a,b
+set xlabel "Paketgröße in Byte"
+set ylabel "Zeit in s"
+plot "setup6.dat" , f(x)
