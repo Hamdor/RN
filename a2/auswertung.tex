@@ -37,6 +37,7 @@ lediglich das Program \textit{netserver} auf der korrekten Gegenstelle gestartet
 
 \subsection{TCP-Übertragung}
 \includegraphics[scale=0.75]{setup1.png}
+Die verwendete Paketgröße 65536 Byte.
 
 \subsection{Spezifische Fragen}
 \subsubsection{Fragen}
@@ -74,6 +75,7 @@ Bei diesem Aufbau war es notwendig mit Hilfe des Befehls \textit{route} eine Rou
 
 \subsection{TCP-Übertragung}
 \includegraphics[scale=0.75]{setup2.png}
+Die verwendete Paketgröße 65536 Byte.
 
 \subsection{Spezifische Fragen}
 \subsubsection{Fragen}
@@ -89,7 +91,8 @@ Bei diesem Aufbau war es notwendig mit Hilfe des Befehls \textit{route} eine Rou
  Ping Test also keine nennenswerten Einflüsse, jedoch kann davon ausgegangen werden, dass schlechte Routerperformance
  sich durchaus auf die Datenrate und den Durchsatz auswirken können.
  \item Der Durchsatz hat sich deutlich verschlechtert. Die \textit{MTU} (Maximum Transmission Unit) bzw. \textit{MMS}
- (Maximum Segment Size) hat sich jedoch nicht verändert und lag wie im Aufbau davor bei 1460 Byte.
+ (Maximum Segment Size) hat sich jedoch nicht verändert und lag wie im Aufbau davor bei 1460 Byte. Bei einer Paketgröße
+ von 2058 Bytes hat sich der Durchsatz bei Setup 1 von 390095 Bytes/s auf 234057 Bytes/s verschlechtert.
  \item Die Schnittstellen zum Router haben eine Übertragungsrate von 1GBit/s.
 \end{itemize}
 
@@ -106,6 +109,7 @@ an der Gegenstelle sowie am Sendenden PC die Pfade per \textit{route} Befehl kon
 
 \subsection{TCP-Übertragung}
 \includegraphics[scale=0.75]{setup_wan1.png}
+Die verwendete Paketgröße 65536 Byte.
 
 \subsection{Windowsize}
 \includegraphics[scale=0.75]{wan1_windows.png}
@@ -119,6 +123,7 @@ an der Gegenstelle sowie am Sendenden PC die Pfade per \textit{route} Befehl kon
  \end{equation}
  Setzt man für die RTTI nun 80 Millisekunden ein und für c die Lichtgeschwindigkeit in Meter/s,
  so erhällt man eine Strecke der Länge von 15989 Kilometern.}
+ \item Die erwartete Windowsize zum ausnutzen der Leitung liegt bei ca. 13271 Bytes.
  \item Wie in 4.4 zu sehen ist, wird die Bandbreite erst ab einer Fenstergröße von etwas mehr als 130000 byte vollständig ausgenutzt.
 \end{itemize}
 
@@ -133,6 +138,7 @@ Die zweitee WAN Verbindung wird mit dem Gateway \textit{192.168.17.241} bzw. \te
 
 \subsection{TCP-Übertragung}
 \includegraphics[scale=0.75]{setup_wan2.png}
+Die verwendete Paketgröße 65536 Byte.
 
 \subsection{Windowsize}
 \includegraphics[scale=0.75]{wan2_windows.png}
@@ -149,7 +155,6 @@ Die zweitee WAN Verbindung wird mit dem Gateway \textit{192.168.17.241} bzw. \te
  für weitere Vergewisserung müsste eine erneute Messung durchegführt werden.}
 \end{itemize}
 
-
 %% WAN3
 \section{WAN-Verbindung 3}
 
@@ -159,9 +164,10 @@ Die dritte WAN-Verbindung wird wie die Zwei vorherigen eingestellt, diesesmal mi
 \subsection{Ping Messwerte}
 \includegraphics[scale=0.75]{ping_setup_wan3.png}
 
-
 \subsection{TCP-Übertragung}
-Der Wireshark Dump von WAN3 ist leider verloren gegangen. Bei einem späteren versuch am Versuchstag war der Gateway für WAN3 nicht mehr zu erreichen.
+\includegraphics[scale=0.75]{setup_wan3.png}
+Die verwendete Paketgröße 65536 Byte.
+Wie zu sehen wird das 150 Paket verworfen und erneut versendet.
 
 \subsection{Windowsize}
 \includegraphics[scale=0.75]{wan3_windows.png}
@@ -178,7 +184,6 @@ Der Wireshark Dump von WAN3 ist leider verloren gegangen. Bei einem späteren ve
  weggeworfen wird, bei dieser fehlerhaften Verbindung.
 \end{itemize}
 
-
 %% WAN4
 \section{WAN-Verbindung 4}
 
@@ -190,6 +195,7 @@ Mit dem Gateway \textit{192.168.17.243} und \textit{192.168.18.243} wird diese w
 
 \subsection{TCP-Übertragung}
 \includegraphics[scale=0.75]{setup_wan4.png}
+Die verwendete Paketgröße 65536 Byte.
 
 \subsection{Windowsize}
 \includegraphics[scale=0.75]{wan4_windows.png}
